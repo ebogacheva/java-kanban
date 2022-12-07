@@ -5,12 +5,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Task {
 
     private static final AtomicInteger idProvider = new AtomicInteger(0);
-
-    public final int ID;
-    protected String title;
-    protected String description;
+    protected final int ID;
+    protected final String title;
+    protected final String description;
     protected Status status;
-    public TaskType type;
+    protected TaskType type;
 
     public Task(String title, String description) {
         this.ID = idProvider.incrementAndGet();

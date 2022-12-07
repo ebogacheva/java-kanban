@@ -78,6 +78,10 @@ public class Manager {
 
     public void createTask(Task task) {
         listOfTasks.put(task.ID, task);
+        if (task.type == TaskType.SUB_TASK) {
+            Subtask subtask = (Subtask) task;
+            subtask.epic.subTasks.add(subtask);
+        }
     }
 
     public ArrayList<Subtask> getEpicSubtasks(Epic epic) {
@@ -88,12 +92,11 @@ public class Manager {
         listOfTasks.put(task.ID, task);
         if (task.type == TaskType.SUB_TASK) {
             Subtask subtask = (Subtask) task;
-            updateEpicStatus(subtask.epicID);
+            updateEpicStatus(subtask.epic);
         }
     }
 
-    private void updateEpicStatus(int epicID) {
-        Epic epic = (Epic) getTask(epicID);
+    private void updateEpicStatus(Epic epic) {
         int countNEW = 0;
         int countDONE = 0;
         for (Subtask subtask : epic.subTasks) {

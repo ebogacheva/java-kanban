@@ -1,8 +1,9 @@
 package ru.yandex.practicum.ebogacheva.sprint3;
 
-public enum TaskType {
+enum TaskType {
 
     TASK,
     SUB_TASK,
     EPIC
+
 }

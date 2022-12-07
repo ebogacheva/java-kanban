@@ -15,11 +15,11 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return "Epic{" +
-                "subTasks=" + subTasks +
-                ", ID=" + ID +
+                " ID=" + ID +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", subTasks=" + subTasks + "\n" +
                 '}';
     }
 }
