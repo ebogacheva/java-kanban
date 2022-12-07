@@ -26,10 +26,8 @@ public class Main {
         Subtask subtask21 = new Subtask("Материалы", "Купить обои, клей, ламинат, краску, валики", epic2);
         manager.createTask(subtask21);
 
-        //Распечатайте списки эпиков, задач и подзадач, через
+        //Распечатайте списки эпиков, задач и подзадач
         manager.printListOfTasks();
-        manager.deleteAllSubtasks();
-        manager.printListOfEpics();
 
         // Измените статусы созданных объектов
     }

@@ -1,70 +1,67 @@
 package ru.yandex.practicum.ebogacheva.sprint3;
 
+import org.w3c.dom.ls.LSOutput;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Manager {
 
     private HashMap<Integer, Task> listOfTasks;
+    private HashMap<Integer, Subtask> listOfSubTasks;
+    private HashMap<Integer, Epic> lisOfEpics;
 
     public Manager() {
         this.listOfTasks = new HashMap<>();
+        this.listOfSubTasks = new HashMap<>();
+        this.lisOfEpics = new HashMap<>();
     }
 
     public HashMap<Integer, Task> getListOfTasks() {
-        return getListByType(TaskType.TASK);
+        return listOfTasks;
     }
 
-    public HashMap<Integer, Task> getListOfSubtasks() {
-        return getListByType(TaskType.SUB_TASK);
+    public HashMap<Integer, Subtask> getListOfSubtasks() {
+        return listOfSubTasks;
     }
 
-    public HashMap<Integer, Task> getListOfEpics() {
-        return getListByType(TaskType.EPIC);
-    }
-
-    private HashMap<Integer, Task> getListByType(TaskType type) {
-        Map<Integer, Task> map = listOfTasks
-                .entrySet()
-                .stream()
-                .filter(a -> a.getValue().type == type)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        return new HashMap<>(map);
+    public HashMap<Integer, Epic> getListOfEpics() {
+        return lisOfEpics;
     }
 
     public void printListOfTasks() {
-        printList(TaskType.TASK);
+        listOfTasks.entrySet().forEach(System.out::println);
     }
 
-    public void printListOfSubtasks() {
-        printList(TaskType.SUB_TASK);
+    public void printListOfSubTasks() {
+        listOfSubTasks.entrySet().forEach(System.out::println);
     }
 
     public void printListOfEpics() {
-        printList(TaskType.EPIC);
-    }
-
-    public void printList(TaskType type) {
-        getListByType(type).forEach((key, value) -> System.out.println(key + " " + value));
+        lisOfEpics.entrySet().forEach(System.out::println);
     }
 
     public void deleteAllTasks() {
-        deleteTasksByType(TaskType.TASK);
+        listOfTasks.clear();
     }
 
     public void deleteAllSubtasks() {
-        deleteTasksByType(TaskType.SUB_TASK);
-        getListByType(TaskType.EPIC).forEach((key, value) -> value.status = Status.NEW);
+        listOfSubTasks.clear();
+        lisOfEpics.forEach((key, value) -> value.status = Status.NEW);
     }
 
     public void deleteAllEpics() {
-        deleteTasksByType(TaskType.EPIC);
+        lisOfEpics.clear();
+        listOfSubTasks.clear();
     }
 
     public void deleteById(int id) {
         listOfTasks.remove(id);
+        if (listOfSubTasks.containsKey(id)) {
+            lisOfEpics.get(listOfSubTasks.get(id).epic.ID);
+
+        }
+        lisOfEpics.remove(id);
     }
 
     private void deleteTasksByType(TaskType type) {
@@ -73,6 +70,8 @@ public class Manager {
 
     public Task getTask(int id) {
         if (listOfTasks.containsKey(id)) return listOfTasks.get(id);
+        if (listOfSubTasks.containsKey(id)) return listOfSubTasks.get(id);
+        if (lisOfEpics.containsKey(id)) return lisOfEpics.get(id);
         return null;
     }
 
