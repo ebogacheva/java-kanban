@@ -1,6 +1,7 @@
 package ru.yandex.practicum.ebogacheva.sprint3;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -73,9 +74,9 @@ public class Main {
         //Получите списки всех задач:
         printAllTasks(manager);
 
-        ArrayList<Task> tasks2 = manager.getTasks();
-        ArrayList<Subtask> subtasks2 = manager.getSubtasks();
-        ArrayList<Epic> epics2 = manager.getEpics();
+        List<Task> tasks2 = manager.getTasks();
+        List<Subtask> subtasks2 = manager.getSubtasks();
+        List<Epic> epics2 = manager.getEpics();
 
         // Получение по идентификатору
         int idTask = tasks2.get(0).getID();
@@ -147,7 +148,7 @@ public class Main {
         System.out.println("-------------------------------------------------------");
     }
 
-    private static void printTasks(ArrayList<Task> tasks, ArrayList<Subtask> subtasks, ArrayList<Epic> epics) {
+    private static void printTasks(List<Task> tasks, List<Subtask> subtasks, List<Epic> epics) {
         printLine();
         tasks.forEach(System.out::println);
         subtasks.forEach(System.out::println);

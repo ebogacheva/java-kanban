@@ -1,6 +1,7 @@
 package ru.yandex.practicum.ebogacheva.sprint3;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,15 +18,15 @@ public class Manager {
         this.epics = new HashMap<>();
     }
 
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         return new ArrayList<>(this.tasks.values());
     }
 
-    public ArrayList<Subtask> getSubtasks() {
+    public List<Subtask> getSubtasks() {
         return new ArrayList<>(this.subtasks.values());
     }
 
-    public ArrayList<Epic> getEpics() {
+    public List<Epic> getEpics() {
         return new ArrayList<>(this.epics.values());
     }
 
@@ -60,7 +61,7 @@ public class Manager {
         if (this.subtasks.containsKey(id)) {
             int epicId = subtasks.get(id).getEpicId();
             Epic epic = (Epic) getTask(epicId);
-            ArrayList<Integer> subIds = epic.getSubIds();
+            List<Integer> subIds = epic.getSubIds();
             subIds.remove((Integer)id);
             epic.setSubIds(subIds);
             epics.put(epicId, updateEpicStatus(epic));
@@ -98,8 +99,8 @@ public class Manager {
         epics.put(id, updateEpicStatus(epic));
     }
 
-    public ArrayList<Subtask> getEpicSubtasks(Epic epic) {
-        ArrayList<Subtask> epicSubs = new ArrayList<>();
+    public List<Subtask> getEpicSubtasks(Epic epic) {
+        List<Subtask> epicSubs = new ArrayList<>();
         for (Integer id : epic.getSubIds()) {
             epicSubs.add(subtasks.get(id));
         }
@@ -138,7 +139,7 @@ public class Manager {
         } else {
             int countNEW = 0;
             int countDONE = 0;
-            ArrayList<Subtask> epicSubs = getEpicSubtasks(epic);
+            List<Subtask> epicSubs = getEpicSubtasks(epic);
             for (Subtask subtask : epicSubs){
                 if (subtask.status == Status.IN_PROGRESS) {
                     epic.status = Status.IN_PROGRESS;

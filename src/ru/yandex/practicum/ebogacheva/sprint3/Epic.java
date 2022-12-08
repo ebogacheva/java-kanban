@@ -1,20 +1,21 @@
 package ru.yandex.practicum.ebogacheva.sprint3;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
 
-    private ArrayList<Integer> subIds;
+    private List<Integer> subIds;
 
     public Epic(String title, String description) {
         super(title, description);
         subIds = new ArrayList<>();
     }
 
-    public ArrayList<Integer> getSubIds() {
+    public List<Integer> getSubIds() {
         return subIds;
     }
 
-    public void setSubIds(ArrayList<Integer> subIds) {
+    public void setSubIds(List<Integer> subIds) {
         this.subIds = subIds;
         if (this.subIds == null) {
             this.subIds = new ArrayList<>();            
