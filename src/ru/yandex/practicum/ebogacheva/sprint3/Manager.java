@@ -80,7 +80,9 @@ public class Manager {
         int id = idProvider.incrementAndGet();
         subtask.setID(id);
         subtasks.put(id, subtask);
-        subtask.getEpic().getSubTasks().put(subtask.getID(), subtask);
+        Epic epic = subtask.getEpic();
+        epic.getSubTasks().put(subtask.getID(), subtask);
+        epics.put(epic.getID(), updateEpicStatus(epic));
     }
 
     public void createEpic(Epic epic) {

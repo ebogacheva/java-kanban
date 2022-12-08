@@ -27,7 +27,7 @@ public class Main {
         manager.createSubtask(subtask12);
 
         Epic epic2 = new Epic("Ремонт", "Обновить детскую комнату");
-        manager.updateEpic(epic2);
+        manager.createEpic(epic2);
 
         Subtask subtask21 = new Subtask("Материалы", "Купить обои, клей, ламинат, краску, валики", epic2);
         manager.createSubtask(subtask21);
@@ -36,10 +36,13 @@ public class Main {
 
         // Измените статусы созданных объектов распечатайте.
         // Проверьте, что статус задачи и подзадачи сохранился, а статус эпика рассчитался по статусам подзадач.
-//        subtask11.setStatus(Status.IN_PROGRESS);
-//        task1.setStatus(Status.IN_PROGRESS);
-//        manager.updateSubtask(subtask11);
-//        printTasks(manager);
+        subtask11.setStatus(Status.DONE);
+        task1.setStatus(Status.DONE);
+        epic1.setStatus(Status.DONE);
+        manager.updateSubtask(subtask11);
+        manager.updateEpic(epic1);
+        manager.updateTask(task1);
+        printTasks(manager);
 
         // попробуйте удалить одну из задач и один из эпиков.
 //        manager.deleteById(subtask11.getId());
@@ -53,5 +56,6 @@ public class Main {
         subtasks.forEach(System.out::println);
         List<Epic> epics = manager.getEpics();
         epics.forEach(System.out::println);
+        System.out.println("-------------------------------------------------------");
     }
 }

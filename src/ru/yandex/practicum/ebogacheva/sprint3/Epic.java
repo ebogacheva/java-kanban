@@ -1,6 +1,5 @@
 package ru.yandex.practicum.ebogacheva.sprint3;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Epic extends Task {
@@ -27,7 +26,7 @@ public class Epic extends Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + this.status +
-                ", subTasks=" + "\n" +
+                ", subTasks=" + subTasks + "\n" +
                 '}';
     }
 }
