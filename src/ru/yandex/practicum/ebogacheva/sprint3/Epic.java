@@ -37,7 +37,7 @@ public class Epic extends Task {
 
     @Override
     public void setStatus(Status status) {
-        System.out.println("Статус не может быть установлен.");
+        System.out.println("ОШИБКА: Статус Epic не может быть установлен.");
     }
 
     @Override
