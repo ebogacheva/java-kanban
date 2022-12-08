@@ -1,5 +1,7 @@
 package ru.yandex.practicum.ebogacheva.sprint3;
 
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -16,19 +18,34 @@ public class Main {
 
         // Создать один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
         Epic epic1 = new Epic("Новый год", "Организовать праздник");
-        manager.createTask(epic1);
+        manager.createEpic(epic1);
         Subtask subtask11 = new Subtask("Елка", "Купить до 30 декабря", epic1);
-        manager.createTask(subtask11);
+        manager.createSubtask(subtask11);
         Subtask subtask12 = new Subtask("Подарки", "Купить и завернуть подарки", epic1);
-        manager.createTask(subtask12);
+        manager.createSubtask(subtask12);
         Epic epic2 = new Epic("Ремонт", "Обновить детскую комнату");
-        manager.createTask(epic2);
+        manager.createEpic(epic2);
         Subtask subtask21 = new Subtask("Материалы", "Купить обои, клей, ламинат, краску, валики", epic2);
-        manager.createTask(subtask21);
+        manager.createSubtask(subtask21);
 
         //Распечатайте списки эпиков, задач и подзадач
-        manager.printListOfTasks();
+        printTasks(manager);
 
-        // Измените статусы созданных объектов
+        // Измените статусы созданных объектов распечатайте. Проверьте, что статус задачи и подзадачи сохранился, а статус эпика рассчитался по статусам подзадач.
+        subtask11.setStatus(Status.IN_PROGRESS);
+        printTasks(manager);
+
+        // попробуйте удалить одну из задач и один из эпиков.
+//        manager.deleteById(subtask11.getId());
+//        printTasks(manager);
+    }
+
+    private static void printTasks(Manager manager) {
+        List<Task> tasks = manager.getTasks();
+        tasks.forEach(System.out::println);
+        List<Subtask> subtasks = manager.getSubtasks();
+        subtasks.forEach(System.out::println);
+        List<Epic> epics = manager.getEpics();
+        epics.forEach(System.out::println);
     }
 }

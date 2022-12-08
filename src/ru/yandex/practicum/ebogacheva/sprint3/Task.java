@@ -4,19 +4,40 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Task {
 
-    private static final AtomicInteger idProvider = new AtomicInteger(0);
-    protected final int ID;
+    private int ID;
     protected final String title;
     protected final String description;
     protected Status status;
-    protected TaskType type;
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int id) {
+        this.ID = id;
+    }
 
     public Task(String title, String description) {
-        this.ID = idProvider.incrementAndGet();
+        this.ID = 0;
         this.title = title;
         this.description = description;
         this.status = Status.NEW;
-        this.type = TaskType.TASK;
     }
 
     @Override
@@ -28,5 +49,6 @@ public class Task {
                 ", status=" + status +
                 '}';
     }
+
 }
 
