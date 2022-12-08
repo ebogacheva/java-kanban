@@ -15,7 +15,7 @@ public class Epic extends Task {
         return subIds;
     }
 
-    public void setSubIds(List<Integer> subIds) {
+    void setSubIds(List<Integer> subIds) {
         this.subIds = subIds;
         if (this.subIds == null) {
             this.subIds = new ArrayList<>();            
