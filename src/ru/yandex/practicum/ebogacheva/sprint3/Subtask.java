@@ -17,6 +17,10 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
+    public void resetEpicId() {
+        this.epicId = -1;
+    }
+
     @Override
     public String toString() {
         return "\nSubtask{" +
