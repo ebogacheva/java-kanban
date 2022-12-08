@@ -1,6 +1,5 @@
 package ru.yandex.practicum.ebogacheva.sprint3;
 
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Task {
 
@@ -17,14 +16,6 @@ public class Task {
         this.status = status;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
     public int getID() {
         return ID;
     }
@@ -33,11 +24,11 @@ public class Task {
         this.ID = id;
     }
 
-    public Task(String title, String description) {
+    public Task(String title, String description, Status status) {
         this.ID = 0;
         this.title = title;
         this.description = description;
-        this.status = Status.NEW;
+        this.status = status;
     }
 
     @Override
