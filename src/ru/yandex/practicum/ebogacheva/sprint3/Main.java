@@ -1,6 +1,5 @@
 package ru.yandex.practicum.ebogacheva.sprint3;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -38,13 +37,13 @@ public class Main {
 
         // Распечатайте списки эпиков, задач и подзадач
         // Получите списки всех задач:
-        printTasks(manager.getTasks(), manager.getSubtasks(), manager.getEpics());
+        printAllTasks(manager);
+
 
         manager.deleteAllTasks();
-        manager.deleteAllSubtasks();
         manager.deleteAllEpics();
-
         printAllTasks(manager);
+
 
         // Создать 2 задачи (Task) - ПОСЛЕ УДАЛЕНИЯ
         System.out.println("Снова заполненили тестовые значения\n");
@@ -54,7 +53,7 @@ public class Main {
         Task task4 = new Task("ЧЕМОДАН", "Размер L - заказать, забрать.");
         manager.createTask(task4);
 
-        // Создать один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
+        // Создать один эпик с 2 подзадачами
         Epic epic3 = new Epic("НОВЫЙ ГОД", "Организовать праздник");
         manager.createEpic(epic3);
 
@@ -64,27 +63,23 @@ public class Main {
         Subtask subtask32 = new Subtask("ПОДАРКИ", "Купить и завернуть подарки", epic3.getID());
         manager.createSubtask(subtask32);
 
+        // а другой эпик с 1 подзадачей.
         Epic epic4 = new Epic("РЕМОНТ", "Обновить детскую комнату");
         manager.createEpic(epic4);
 
         Subtask subtask41 = new Subtask("МАТЕРИАЛЫ", "Купить обои, клей, ламинат, краску, валики", epic4.getID());
         manager.createSubtask(subtask41);
 
-        //Распечатайте списки эпиков, задач и подзадач
-        //Получите списки всех задач:
+        // Распечатайте списки эпиков, задач и подзадач
         printAllTasks(manager);
 
+        // Получение по идентификатору
         List<Task> tasks2 = manager.getTasks();
         List<Subtask> subtasks2 = manager.getSubtasks();
         List<Epic> epics2 = manager.getEpics();
-
-        // Получение по идентификатору
-        int idTask = tasks2.get(0).getID();
-        System.out.println("Task by id: \n" + manager.getTask(idTask));
-        int idEpic = epics2.get(0).getID();
-        System.out.println("Epic by id: \n" + manager.getTask(idEpic));
-        int idSub = subtasks2.get(0).getID();
-        System.out.println("Subs by id: \n" + manager.getTask(idSub));
+        System.out.println("Task by id: \n" + manager.getTask(tasks2.get(0).getID()));
+        System.out.println("Epic by id: \n" + manager.getTask(epics2.get(0).getID()));
+        System.out.println("Subs by id: \n" + manager.getTask(subtasks2.get(0).getID()));
         printLine();
 
         // Измените статусы созданных объектов распечатайте.
@@ -132,11 +127,10 @@ public class Main {
         System.out.println("Epic by id - check status: \n" + manager.getTask(idEpic3));
         printLine();
 
-        //Удаление по идентификатору:
+        // Удаление по идентификатору:
         manager.deleteTaskById(idTask3);
         manager.deleteSubtaskById(idSub31);
         manager.deleteEpicById(epics2.get(1).getID());
-
         printAllTasks(manager);
     }
 
