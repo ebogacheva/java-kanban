@@ -35,7 +35,9 @@ public class Manager {
 
     public void deleteAllSubtasks() {
         this.subtasks.clear();
-        this.epics.forEach((key, value) -> {value.setSubIds(null); value.setStatus(Status.NEW);});
+        this.epics.forEach((key, value) -> {
+            value.clearSubTasks();
+        });
     }
 
     public void deleteAllEpics() {
@@ -53,6 +55,7 @@ public class Manager {
     public void deleteTaskById(int id) {
         this.tasks.remove(id);
     }
+
     public void deleteSubtaskById(int id) {
         if (this.subtasks.containsKey(id)) {
             int epicId = subtasks.get(id).getEpicId();
@@ -108,10 +111,20 @@ public class Manager {
     }
 
     public void updateSubtask(Subtask subtask) {
+        if (subtasks.containsKey(subtask.getID())) {
+            Subtask oldSubtask = subtasks.get(subtask.getID());
+            if (epics.containsKey(oldSubtask.getEpicId())) {
+                Epic oldEpic = epics.get(oldSubtask.getEpicId());
+                oldEpic.removeSubTask(subtask.getID());
+                epics.put(oldEpic.getID(), updateEpicStatus(oldEpic));        
+            }
+        }
+
         subtasks.put(subtask.getID(), subtask);
+
         Epic epic = epics.get(subtask.getEpicId());
-        Epic epicUpdated = updateEpicStatus(epic);
-        epics.put(epic.getID(), epicUpdated);
+        epic.addSubTask(subtask.getID());
+        epics.put(epic.getID(), updateEpicStatus(epic));
     }
 
     public void updateEpic(Epic epic) {
@@ -130,21 +143,23 @@ public class Manager {
                 if (subtask.status == Status.IN_PROGRESS) {
                     epic.status = Status.IN_PROGRESS;
                     break;
-                }
-                if (subtask.status == Status.NEW) {
+                } else  if (subtask.status == Status.NEW) {
                     countNEW++;
-                    if (countNEW == epic.getSubIds().size()) {
-                        epic.status = Status.NEW;
+                    if (countDONE > 0) {
                         break;
                     }
-                }
-                if (subtask.status == Status.DONE) {
+                } else if (subtask.status == Status.DONE) {
                     countDONE++;
-                    if (countDONE == epic.getSubIds().size()) {
-                        epic.status = Status.DONE;
+                    if (countNEW > 0) {
                         break;
                     }
                 }
+            }
+            int N = epic.getSubIds().size();
+            if (countNEW == N) {
+                epic.status = Status.NEW;
+            } else if (countDONE == N) {
+                epic.status = Status.DONE;
             }
         }
         return epic;

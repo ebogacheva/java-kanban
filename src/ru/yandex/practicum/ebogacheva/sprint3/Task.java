@@ -24,11 +24,11 @@ public class Task {
         this.ID = id;
     }
 
-    public Task(String title, String description, Status status) {
+    public Task(String title, String description) {
         this.ID = 0;
         this.title = title;
         this.description = description;
-        this.status = status;
+        this.status = Status.NEW;
     }
 
     @Override

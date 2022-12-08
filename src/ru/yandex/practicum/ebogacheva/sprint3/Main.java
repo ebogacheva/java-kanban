@@ -12,26 +12,26 @@ public class Main {
         // Тестирование Трекера задач
 
         // Создать 2 задачи (Task)
-        Task task1 = new Task("Налоговая декларация", "Отправить декладацию до 31 декабря", Status.NEW);
+        Task task1 = new Task("Налоговая декларация", "Отправить декладацию до 31 декабря");
         manager.createTask(task1);
 
-        Task task2 = new Task("Чемодан", "Размер L - заказать, забрать.", Status.NEW);
+        Task task2 = new Task("Чемодан", "Размер L - заказать, забрать.");
         manager.createTask(task2);
 
         // Создать один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
-        Epic epic1 = new Epic("Новый год", "Организовать праздник", Status.NEW);
+        Epic epic1 = new Epic("Новый год", "Организовать праздник");
         manager.createEpic(epic1);
 
-        Subtask subtask11 = new Subtask("Елка", "Купить до 30 декабря", epic1.getID(), Status.NEW);
+        Subtask subtask11 = new Subtask("Елка", "Купить до 30 декабря", epic1.getID());
         manager.createSubtask(subtask11);
 
-        Subtask subtask12 = new Subtask("Подарки", "Купить и завернуть подарки", epic1.getID(), Status.NEW);
+        Subtask subtask12 = new Subtask("Подарки", "Купить и завернуть подарки", epic1.getID());
         manager.createSubtask(subtask12);
 
-        Epic epic2 = new Epic("Ремонт", "Обновить детскую комнату", Status.NEW);
+        Epic epic2 = new Epic("Ремонт", "Обновить детскую комнату");
         manager.createEpic(epic2);
 
-        Subtask subtask21 = new Subtask("Материалы", "Купить обои, клей, ламинат, краску, валики", epic2.getID(), Status.NEW);
+        Subtask subtask21 = new Subtask("Материалы", "Купить обои, клей, ламинат, краску, валики", epic2.getID());
         manager.createSubtask(subtask21);
 
         //Распечатайте списки эпиков, задач и подзадач
@@ -52,26 +52,26 @@ public class Main {
 
         // Создать 2 задачи (Task) - ПОСЛЕ УДАЛЕНИЯ
         System.out.println("Снова заполненили тестовые значения\n");
-        Task task3 = new Task("НАЛОГОВАЯ ДЕКЛАРАЦИЯ", "Отправить декладацию до 31 декабря", Status.NEW);
+        Task task3 = new Task("НАЛОГОВАЯ ДЕКЛАРАЦИЯ", "Отправить декладацию до 31 декабря");
         manager.createTask(task3);
 
-        Task task4 = new Task("ЧЕМОДАН", "Размер L - заказать, забрать.", Status.NEW);
+        Task task4 = new Task("ЧЕМОДАН", "Размер L - заказать, забрать.");
         manager.createTask(task4);
 
         // Создать один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
-        Epic epic3 = new Epic("НОВЫЙ ГОД", "Организовать праздник", Status.NEW);
+        Epic epic3 = new Epic("НОВЫЙ ГОД", "Организовать праздник");
         manager.createEpic(epic3);
 
-        Subtask subtask31 = new Subtask("ЕЛКА", "Купить до 30 декабря", epic3.getID(), Status.NEW);
+        Subtask subtask31 = new Subtask("ЕЛКА", "Купить до 30 декабря", epic3.getID());
         manager.createSubtask(subtask31);
 
-        Subtask subtask32 = new Subtask("ПОДАРКИ", "Купить и завернуть подарки", epic3.getID(), Status.NEW);
+        Subtask subtask32 = new Subtask("ПОДАРКИ", "Купить и завернуть подарки", epic3.getID());
         manager.createSubtask(subtask32);
 
-        Epic epic4 = new Epic("РЕМОНТ", "Обновить детскую комнату", Status.NEW);
+        Epic epic4 = new Epic("РЕМОНТ", "Обновить детскую комнату");
         manager.createEpic(epic4);
 
-        Subtask subtask41 = new Subtask("МАТЕРИАЛЫ", "Купить обои, клей, ламинат, краску, валики", epic4.getID(), Status.NEW);
+        Subtask subtask41 = new Subtask("МАТЕРИАЛЫ", "Купить обои, клей, ламинат, краску, валики", epic4.getID());
         manager.createSubtask(subtask41);
 
         //Распечатайте списки эпиков, задач и подзадач
