@@ -80,7 +80,7 @@ public class Manager {
         int id = idProvider.incrementAndGet();
         subtask.setID(id);
         subtasks.put(id, subtask);
-        subtask.getEpic().getSubTasks().add(subtask);
+        subtask.getEpic().getSubTasks().put(subtask.getID(), subtask);
     }
 
     public void createEpic(Epic epic) {
@@ -91,7 +91,7 @@ public class Manager {
 
 
     public ArrayList<Subtask> getEpicSubtasks(Epic epic) {
-        return epic.getSubTasks();
+        return new ArrayList<>(epic.getSubTasks().values());
     }
 
     public void updateTask(Task task) {
@@ -100,25 +100,21 @@ public class Manager {
 
     public void updateSubtask(Subtask subtask) {
         subtasks.put(subtask.getID(), subtask);
-        ArrayList<Subtask> list = subtask.getEpic().getSubTasks();
-        for (Subtask st : list) {
-            if (st.getID() == subtask.getID()) {
-                list.remove(st);
-                list.add(subtask);
-            }
-        }
-        subtask.getEpic().setSubTasks(list);
-        updateEpicStatus(subtask.getEpic());
+        subtask.getEpic().getSubTasks().put(subtask.getID(), subtask);
+        Epic epic = updateEpicStatus(subtask.getEpic());
+        epics.put(epic.getID(), epic);
+
     }
 
     public void updateEpic(Epic epic) {
-        epics.put(epic.getID(), epic);
+        epics.put(updateEpicStatus(epic).getID(), epic);
     }
 
-    private void updateEpicStatus(Epic epic) {
+    private Epic updateEpicStatus(Epic epic) {
         int countNEW = 0;
         int countDONE = 0;
-        for (Subtask subtask : epic.getSubTasks()) {
+        ArrayList<Subtask> list = new ArrayList<>(epic.getSubTasks().values());
+        for (Subtask subtask : list) {
             if (subtask.status == Status.IN_PROGRESS) {
                 epic.status = Status.IN_PROGRESS;
                 break;
@@ -138,7 +134,7 @@ public class Manager {
                 }
             }
         }
-        updateEpic(epic);
+        return epic;
     }
 
 }

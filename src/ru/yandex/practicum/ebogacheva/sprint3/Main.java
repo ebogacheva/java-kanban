@@ -19,21 +19,27 @@ public class Main {
         // Создать один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
         Epic epic1 = new Epic("Новый год", "Организовать праздник");
         manager.createEpic(epic1);
+
         Subtask subtask11 = new Subtask("Елка", "Купить до 30 декабря", epic1);
         manager.createSubtask(subtask11);
+
         Subtask subtask12 = new Subtask("Подарки", "Купить и завернуть подарки", epic1);
         manager.createSubtask(subtask12);
+
         Epic epic2 = new Epic("Ремонт", "Обновить детскую комнату");
-        manager.createEpic(epic2);
+        manager.updateEpic(epic2);
+
         Subtask subtask21 = new Subtask("Материалы", "Купить обои, клей, ламинат, краску, валики", epic2);
         manager.createSubtask(subtask21);
-
         //Распечатайте списки эпиков, задач и подзадач
         printTasks(manager);
 
-        // Измените статусы созданных объектов распечатайте. Проверьте, что статус задачи и подзадачи сохранился, а статус эпика рассчитался по статусам подзадач.
-        subtask11.setStatus(Status.IN_PROGRESS);
-        printTasks(manager);
+        // Измените статусы созданных объектов распечатайте.
+        // Проверьте, что статус задачи и подзадачи сохранился, а статус эпика рассчитался по статусам подзадач.
+//        subtask11.setStatus(Status.IN_PROGRESS);
+//        task1.setStatus(Status.IN_PROGRESS);
+//        manager.updateSubtask(subtask11);
+//        printTasks(manager);
 
         // попробуйте удалить одну из задач и один из эпиков.
 //        manager.deleteById(subtask11.getId());

@@ -1,22 +1,23 @@
 package ru.yandex.practicum.ebogacheva.sprint3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Epic extends Task {
 
-    private ArrayList<Subtask> subTasks;
+    private HashMap<Integer, Subtask> subTasks;
 
     public Epic(String title, String description) {
         super(title, description);
-        subTasks = new ArrayList<>();
+        subTasks = new HashMap<>();
     }
 
-    public ArrayList<Subtask> getSubTasks() {
+    public HashMap<Integer, Subtask> getSubTasks() {
         return subTasks;
     }
 
-    public void setSubTasks(ArrayList<Subtask> subTasks) {
-        this.subTasks=subTasks;
+    public void setSubTasks(HashMap<Integer, Subtask> subTasks) {
+        this.subTasks = subTasks;
     }
 
     @Override
@@ -26,7 +27,7 @@ public class Epic extends Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + this.status +
-                ", subTasks=" + subTasks + "\n" +
+                ", subTasks=" + "\n" +
                 '}';
     }
 }
