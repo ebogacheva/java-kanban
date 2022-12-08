@@ -2,19 +2,19 @@ package ru.yandex.practicum.ebogacheva.sprint3;
 
 public class Subtask extends Task {
 
-    private Epic epic;
+    private int epicId;
 
-    public Subtask(String title, String description, Epic epic) {
-        super(title, description);
-        this.epic = epic;
+    public Subtask(String title, String description, int epicId, Status status) {
+        super(title, description, status);
+        this.epicId = epicId;
     }
 
-    public Epic getEpic() {
-        return epic;
+    public int getEpicId() {
+        return epicId;
     }
 
-    public void setEpic(Epic epic) {
-        this.epic=epic;
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Subtask extends Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
-                ", epicID=" + epic.getID() +
+                ", epicID=" + epicId +
                 '}';
     }
 }

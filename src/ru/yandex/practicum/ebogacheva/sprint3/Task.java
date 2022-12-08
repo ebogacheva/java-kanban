@@ -14,15 +14,7 @@ public class Task {
     }
 
     public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
+        this.status=status;
     }
 
     public int getID() {
@@ -33,11 +25,11 @@ public class Task {
         this.ID = id;
     }
 
-    public Task(String title, String description) {
+    public Task(String title, String description, Status status) {
         this.ID = 0;
         this.title = title;
         this.description = description;
-        this.status = Status.NEW;
+        this.status = status;
     }
 
     @Override
