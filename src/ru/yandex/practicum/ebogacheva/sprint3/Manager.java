@@ -147,7 +147,40 @@ public class Manager {
     }
 
     public void updateEpic(Epic epic) {
-        epics.put(epic.getID(), epic);
+        
+        int id = epic.getID();
+        
+        // если не существует - просто добавить
+        if (!epics.containsKey(id)) {
+            epics.put(id, epic);
+            return;
+        }
+
+        // отсоединить все подзадачи от старого Epic
+        for(Subtask subtask : getEpicSubtasks(epics.get(id))) {
+            subtask.resetEpicId();
+        }
+
+        // заменить epic
+        epics.put(id, epic);
+
+        // присоединить подзадачи к epic, если они ещё не присоединены
+        for(Subtask subtask : getEpicSubtasks(epic)) {
+            if (subtask.isAttachedToEpic()) {
+                int oldEpicIdOfSubTask = subtask.getEpicId();
+                // отсоединить от какого-то старого епика
+                if (oldEpicIdOfSubTask != id) {
+                    Epic subTaskOldEpic = epics.get(oldEpicIdOfSubTask);
+                    subTaskOldEpic.removeSubTask(subtask.getID());
+                    updateEpicStatus(subTaskOldEpic);    
+                }
+            }
+            subtask.setEpicId(id);
+        }
+
+        // удалить все subtask которые больше не привязаны к какому либо epic
+        this.subtasks.entrySet().removeIf(entry -> !entry.getValue().isAttachedToEpic());
+        
         updateEpicStatus(epic);
     }
 

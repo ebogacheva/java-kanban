@@ -20,6 +20,11 @@ public class Subtask extends Task {
     void resetEpicId() {
         this.epicId = -1;
     }
+    
+    public boolean isAttachedToEpic() {
+        return this.epicId > -1;
+    }
+
 
     @Override
     public String toString() {
