@@ -8,7 +8,11 @@ public class Main {
 
         Manager manager = new Manager();
 
-        // Моему уважаемому ревьюверу: Давно я не сталкивалась с задачей, которая бы меня так вывела из себя)
+        // Моему уважаемому ревьюверу: Давно я не сталкивалась с задачей, которая бы меня так вывела из себя).
+        // Что меня вывело из себя: куча недосказанностей в ТЗ, которые вероятно будут раскрыты в будущем, но сейчас
+        // оставляли простор для фантазии и нервов одновременно. Люблю более конкретные ТЗ (кто ж не любит).
+        // И давно не писала себе комментарии в коде, чтобы понимать, что я сделала.
+        // В дополнение к ответам почистила немного проект.
         // Тестирование Трекера задач
 
         printTitle("Тест 1: Заполнение задачами");
@@ -23,26 +27,24 @@ public class Main {
         Epic epic1 = new Epic("Новый год", "Организовать праздник");
         manager.createEpic(epic1);
 
-        Subtask subtask11 = new Subtask("Елка", "Купить до 30 декабря", epic1.getID());
+        Subtask subtask11 = new Subtask("Елка", "Купить до 30 декабря", epic1.getId());
         manager.createSubtask(subtask11);
 
-        Subtask subtask12 = new Subtask("Подарки", "Купить и завернуть подарки", epic1.getID());
+        Subtask subtask12 = new Subtask("Подарки", "Купить и завернуть подарки", epic1.getId());
         manager.createSubtask(subtask12);
 
         // а другой эпик с 1 подзадачей.
         Epic epic2 = new Epic("Ремонт", "Обновить детскую комнату");
         manager.createEpic(epic2);
 
-        Subtask subtask21 = new Subtask("Материалы", "Купить обои, клей, ламинат, краску, валики", epic2.getID());
+        Subtask subtask21 = new Subtask("Материалы", "Купить обои, клей, ламинат, краску, валики", epic2.getId());
         manager.createSubtask(subtask21);
         printAllTasks(manager);
-
 
         printTitle("Тест 2: Удаление всех задач");
         manager.deleteAllTasks();
         manager.deleteAllEpics();
         printAllTasks(manager);
-
 
         printTitle("Тест 3: Снова заполненили тестовые значения");
         // Создать 2 задачи (Task) - ПОСЛЕ УДАЛЕНИЯ
@@ -56,46 +58,43 @@ public class Main {
         Epic epic3 = new Epic("НОВЫЙ ГОД", "Организовать праздник");
         manager.createEpic(epic3);
 
-        Subtask subtask31 = new Subtask("ЕЛКА", "Купить до 30 декабря", epic3.getID());
+        Subtask subtask31 = new Subtask("ЕЛКА", "Купить до 30 декабря", epic3.getId());
         manager.createSubtask(subtask31);
 
-        Subtask subtask32 = new Subtask("ПОДАРКИ", "Купить и завернуть подарки", epic3.getID());
+        Subtask subtask32 = new Subtask("ПОДАРКИ", "Купить и завернуть подарки", epic3.getId());
         manager.createSubtask(subtask32);
 
         // а другой эпик с 1 подзадачей.
         Epic epic4 = new Epic("РЕМОНТ", "Обновить детскую комнату");
         manager.createEpic(epic4);
 
-        Subtask subtask41 = new Subtask("МАТЕРИАЛЫ", "Купить обои, клей, ламинат, краску, валики", epic4.getID());
+        Subtask subtask41 = new Subtask("МАТЕРИАЛЫ", "Купить обои, клей, ламинат, краску, валики", epic4.getId());
         manager.createSubtask(subtask41);
 
         printAllTasks(manager);
-
 
         printTitle("Тест 4: Получение по идентификатору");
         List<Task> tasks2 = manager.getTasks();
         List<Subtask> subtasks2 = manager.getSubtasks();
         List<Epic> epics2 = manager.getEpics();
-        System.out.println("Task by id: " + manager.getTask(tasks2.get(0).getID()));
-        System.out.println("Epic by id: " + manager.getTask(epics2.get(0).getID()));
-        System.out.println("Subs by id: " + manager.getTask(subtasks2.get(0).getID()));
-
+        System.out.println("Task by id: " + manager.getTask(tasks2.get(0).getId()));
+        System.out.println("Epic by id: " + manager.getTask(epics2.get(0).getId()));
+        System.out.println("Subs by id: " + manager.getTask(subtasks2.get(0).getId()));
 
         // Измените статусы созданных объектов распечатайте.
         // Проверьте, что статус задачи и подзадачи сохранился, а статус эпика рассчитался по статусам подзадач.
         printTitle("Тест 5: Изменения в Task - DONE");
         task3.setStatus(Status.DONE);
         manager.updateTask(task3);
-        int idTask3 = task3.getID();
+        int idTask3 = task3.getId();
         System.out.println("Task by id - must be DONE: \n" + manager.getTask(idTask3));
 
-        
         printTitle("Тест 6: Изменения в Subtask - DONE");
         subtask31.setStatus(Status.DONE);
         manager.updateSubtask(subtask31);
-        int idSub31 = subtask31.getID();
+        int idSub31 = subtask31.getId();
         System.out.println("Subs by id - must be DONE: \n" + manager.getTask(idSub31));
-        int idEpic3 = epics2.get(0).getID();
+        int idEpic3 = epics2.get(0).getId();
         System.out.println("Epic by id - check status: \n" + manager.getTask(idEpic3));
 
 
@@ -110,7 +109,7 @@ public class Main {
         manager.updateSubtask(subtask31);
         subtask32.setStatus(Status.DONE);
         manager.updateSubtask(subtask32);
-        int idSub32 = subtask32.getID();
+        int idSub32 = subtask32.getId();
         System.out.println("Subs by id - must be DONE: \n" + manager.getTask(idSub31));
         System.out.println("Subs by id - must be DONE: \n" + manager.getTask(idSub32));
         System.out.println("Epic by id - check status: \n" + manager.getTask(idEpic3));
@@ -129,7 +128,7 @@ public class Main {
         printTitle("Тест 9: Удаление по идентификатору");
         manager.deleteTaskById(idTask3);
         manager.deleteSubtaskById(idSub31);
-        manager.deleteEpicById(epics2.get(1).getID());
+        manager.deleteEpicById(epics2.get(1).getId());
         printAllTasks(manager);
     }
 

@@ -11,6 +11,8 @@ public class Manager {
     private HashMap<Integer, Subtask> subtasks;
     private HashMap<Integer, Epic> epics;
     private static final AtomicInteger idProvider = new AtomicInteger(0);
+    // Вроде же работает правильно?
+    // Да, понятно, что не для данного случая слишком, но это было первое, что я вспомнила.
 
     public Manager() {
         this.tasks = new HashMap<>();
@@ -87,14 +89,14 @@ public class Manager {
 
     public Task createTask(Task task) {
         int id = idProvider.incrementAndGet();
-        task.setID(id);
+        task.setId(id);
         tasks.put(id, task);
         return task;
     }
 
     public Subtask createSubtask(Subtask subtask) {
         int id = idProvider.incrementAndGet();
-        subtask.setID(id);
+        subtask.setId(id);
         subtasks.put(id, subtask);
 
         Epic epic = epics.get(subtask.getEpicId());
@@ -106,7 +108,7 @@ public class Manager {
 
     public Epic createEpic(Epic epic) {
         int id = idProvider.incrementAndGet();
-        epic.setID(id);
+        epic.setId(id);
         epics.put(id, updateEpicStatus(epic));
         return epic;
     }
@@ -120,35 +122,39 @@ public class Manager {
     }
 
     public void updateTask(Task task) {
-        tasks.put(task.getID(), task);
+        tasks.put(task.getId(), task);
     }
 
     public void updateSubtask(Subtask subtask) {
-        
         // если такой задачи нету, то добавляем
-        if (!subtasks.containsKey(subtask.getID())) {
+        if (!subtasks.containsKey(subtask.getId())) {
             createSubtask(subtask);
             return;
         }
 
         // для старой задачи удаляем из старого epic
-        Subtask oldSubtask = subtasks.get(subtask.getID());
-        Epic oldEpic = epics.get(oldSubtask.getEpicId());
-        oldEpic.removeSubTask(subtask.getID());
-        updateEpicStatus(oldEpic);
+        Subtask oldSubtask = subtasks.get(subtask.getId());
+        boolean isSameEpic = oldSubtask.getEpicId() == subtask.getEpicId();
+        if (!isSameEpic) {
+            Epic oldEpic = epics.get(oldSubtask.getEpicId());
+            oldEpic.removeSubTask(subtask.getId());
+            updateEpicStatus(oldEpic);
+        }
 
         // заменяем
-        subtasks.put(subtask.getID(), subtask);
+        subtasks.put(subtask.getId(), subtask);
 
         // обновляем новый epic
         Epic epic = epics.get(subtask.getEpicId());
-        epic.addSubTask(subtask.getID());
+        if (!isSameEpic) {
+            epic.addSubTask(subtask.getId());
+        }
         updateEpicStatus(epic);
     }
 
     public void updateEpic(Epic epic) {
         
-        int id = epic.getID();
+        int id = epic.getId();
         
         // если не существует - просто добавить
         if (!epics.containsKey(id)) {
@@ -171,7 +177,7 @@ public class Manager {
                 // отсоединить от какого-то старого епика
                 if (oldEpicIdOfSubTask != id) {
                     Epic subTaskOldEpic = epics.get(oldEpicIdOfSubTask);
-                    subTaskOldEpic.removeSubTask(subtask.getID());
+                    subTaskOldEpic.removeSubTask(subtask.getId());
                     updateEpicStatus(subTaskOldEpic);    
                 }
             }
