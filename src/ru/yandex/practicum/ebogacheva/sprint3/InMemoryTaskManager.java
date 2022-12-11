@@ -19,7 +19,7 @@ public class InMemoryTaskManager implements TaskManager {
         this.epics = new HashMap<>();
         this.historyManager = Managers.getDefaultHistory();
     }
-    
+
     @Override
     public List<Task> getTasks() {
         return new ArrayList<>(this.tasks.values());
@@ -66,12 +66,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (epics.containsKey(id)) {
             task = epics.get(id);
         }
-        addToHistory(task);
-        return task;
-    }
-
-    private void addToHistory(Task task) {
         historyManager.add(task);
+        return task;
     }
 
     @Override
