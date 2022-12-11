@@ -121,11 +121,43 @@ public class Main {
         System.out.println("Epic by id - check status: \n" + taskManager.getTask(idEpic3));
 
 
-        printTitle("Тест 9: Удаление по идентификатору");
+        printTitle("Тест 10: Удаление по идентификатору");
         taskManager.deleteTaskById(idTask3);
         taskManager.deleteSubtaskById(idSub31);
         taskManager.deleteEpicById(epics2.get(1).getId());
         printAllTasks(taskManager);
+
+        printTitle("Тест 11: История просмотров");
+        // по предыдущим вызовам должны быть примерно такие таски в истории (13 вызовов getTask - 10 последние соотв.):
+        //    Task:    НАЛОГОВАЯ...
+        //    Subtask: ЁЛКА
+        //    Epic:    НОВЫЙ ГОД
+        //    ...
+        //    Subtask: ПОДАРКИ
+        //    Epic:    НОВЫЙ ГОД
+        printManagerHistory(taskManager);
+
+        printTitle("Тест 12: Не изменение истории просмотров при добалении тасков");
+        Task task12_1 = new Task("ПОДГУЗНИКИ", "Продать на avito лишние");
+        taskManager.createTask(task12_1);
+
+        Epic epic12_1 = new Epic("ИПОТЕКА", "Купить ещё одну квартиру");
+        taskManager.createEpic(epic12_1);
+
+        // история не должна была изменится с прошлого раза
+        printManagerHistory(taskManager);
+
+        printTitle("Тест 13: Изменение истории после getTask");
+        taskManager.getTask(epic12_1.getId());
+        taskManager.getTask(task12_1.getId());
+
+        // два последних таска должны быть новые: Epic: ИПОТЕКА; Task: ПОДГУЗНИКИ
+        printManagerHistory(taskManager);
+
+        printTitle("Тест 14: Неизменение истории даже при удалении тасков (история хранит даже удалённые таски)");
+        taskManager.deleteAllTasks();
+        printAllTasks(taskManager);        
+        printManagerHistory(taskManager);
     }
 
     private static void printAllTasks(TaskManager manager) {
@@ -142,4 +174,11 @@ public class Main {
         subtasks.forEach(System.out::println);
         epics.forEach(System.out::println);
     }
+
+    private static void printManagerHistory(TaskManager manager) {
+        List<Task> history = manager.getHistory();
+        printTitle("История просмотра задач");
+        history.forEach(System.out::println);
+    }
+
 }
