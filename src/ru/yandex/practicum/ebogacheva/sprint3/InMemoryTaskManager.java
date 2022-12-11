@@ -10,14 +10,14 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks;
     private HashMap<Integer, Subtask> subtasks;
     private HashMap<Integer, Epic> epics;
-    private List<Task> history;
+    private HistoryManager historyManager;
     private static final AtomicInteger idProvider = new AtomicInteger(0);
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
         this.subtasks = new HashMap<>();
         this.epics = new HashMap<>();
-        this.history = new ArrayList<>();
+        this.historyManager = Managers.getDefaultHistory();
     }
     @Override
     public List<Task> getTasks() {
@@ -70,10 +70,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void addToHistory(Task task) {
-        if (history.size() == 10) {
-            history.remove(0);
-        }
-        history.add(task);
+        historyManager.add(task);
     }
 
     @Override
@@ -217,7 +214,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        return history;
+        return historyManager.getHistory();
     }
 
     private Status getEpicStatusBySubtasks(Epic epic) {
