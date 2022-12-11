@@ -10,12 +10,14 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks;
     private HashMap<Integer, Subtask> subtasks;
     private HashMap<Integer, Epic> epics;
+    private List<Task> history;
     private static final AtomicInteger idProvider = new AtomicInteger(0);
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
         this.subtasks = new HashMap<>();
         this.epics = new HashMap<>();
+        this.history = new ArrayList<>();
     }
     @Override
     public List<Task> getTasks() {
@@ -53,16 +55,25 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int id) {
+        Task task = null;
         if (tasks.containsKey(id)) {
-            return tasks.get(id);
+            task = tasks.get(id);
         }
         if (subtasks.containsKey(id)) {
-            return subtasks.get(id);
+            task = subtasks.get(id);
         }
         if (epics.containsKey(id)) {
-            return epics.get(id);
+            task = epics.get(id);
         }
-        return null;
+        addToHistory(task);
+        return task;
+    }
+
+    private void addToHistory(Task task) {
+        if (history.size() == 10) {
+            history.remove(0);
+        }
+        history.add(task);
     }
 
     @Override
@@ -202,6 +213,11 @@ public class InMemoryTaskManager implements TaskManager {
         this.subtasks.entrySet().removeIf(entry -> !entry.getValue().isAttachedToEpic());
         
         updateEpicStatus(epic);
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return history;
     }
 
     private Status getEpicStatusBySubtasks(Epic epic) {
