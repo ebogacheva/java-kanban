@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        TaskManager manager = new TaskManager();
+        InMemoryTaskManager manager = new InMemoryTaskManager();
 
         // Тестирование Трекера задач
 
@@ -127,7 +127,7 @@ public class Main {
         printAllTasks(manager);
     }
 
-    private static void printAllTasks(TaskManager manager) {
+    private static void printAllTasks(InMemoryTaskManager manager) {
         printTasks(manager.getTasks(), manager.getSubtasks(), manager.getEpics());
     }
 
