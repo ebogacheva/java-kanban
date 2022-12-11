@@ -82,7 +82,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         int epicId = subtasks.get(id).getEpicId();
-        Epic epic = (Epic) getTask(epicId);
+        Epic epic = epics.get(epicId);
         epic.removeSubTask(id);
         updateEpicStatus(epic);
 
