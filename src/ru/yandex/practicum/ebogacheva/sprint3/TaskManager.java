@@ -5,16 +5,15 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Manager {
+public class TaskManager {
 
     private HashMap<Integer, Task> tasks;
     private HashMap<Integer, Subtask> subtasks;
     private HashMap<Integer, Epic> epics;
     private static final AtomicInteger idProvider = new AtomicInteger(0);
-    // Вроде же работает правильно?
-    // Да, понятно, что не для данного случая слишком, но это было первое, что я вспомнила.
 
-    public Manager() {
+
+    public TaskManager() {
         this.tasks = new HashMap<>();
         this.subtasks = new HashMap<>();
         this.epics = new HashMap<>();

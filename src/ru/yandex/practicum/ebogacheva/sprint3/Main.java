@@ -6,13 +6,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Manager manager = new Manager();
+        TaskManager manager = new TaskManager();
 
-        // Моему уважаемому ревьюверу: Давно я не сталкивалась с задачей, которая бы меня так вывела из себя).
-        // Что меня вывело из себя: куча недосказанностей в ТЗ, которые вероятно будут раскрыты в будущем, но сейчас
-        // оставляли простор для фантазии и нервов одновременно. Люблю более конкретные ТЗ (кто ж не любит).
-        // И давно не писала себе комментарии в коде, чтобы понимать, что я сделала.
-        // В дополнение к ответам почистила немного проект.
         // Тестирование Трекера задач
 
         printTitle("Тест 1: Заполнение задачами");
@@ -132,7 +127,7 @@ public class Main {
         printAllTasks(manager);
     }
 
-    private static void printAllTasks(Manager manager) {
+    private static void printAllTasks(TaskManager manager) {
         printTasks(manager.getTasks(), manager.getSubtasks(), manager.getEpics());
     }
 
