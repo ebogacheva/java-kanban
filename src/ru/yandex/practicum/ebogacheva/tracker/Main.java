@@ -1,4 +1,6 @@
-package ru.yandex.practicum.ebogacheva.sprint3;
+package ru.yandex.practicum.ebogacheva.tracker;
+
+import ru.yandex.practicum.ebogacheva.tracker.tasks.*;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class Main {
 
         printTitle("Тест 1: Заполнение задачами");
         // Создать 2 задачи (Task)
-        Task task1 = new Task("Налоговая декларация", "Отправить декладацию до 31 декабря");
+        Task task1 = new Task("Налоговая декларация", "Отправить декларацию до 31 декабря");
         taskManager.createTask(task1);
 
         Task task2 = new Task("Чемодан", "Размер L - заказать, забрать.");
@@ -41,9 +43,9 @@ public class Main {
         taskManager.deleteAllEpics();
         printAllTasks(taskManager);
 
-        printTitle("Тест 3: Снова заполненили тестовые значения");
+        printTitle("Тест 3: Снова заполнили тестовые значения");
         // Создать 2 задачи (Task) - ПОСЛЕ УДАЛЕНИЯ
-        Task task3 = new Task("НАЛОГОВАЯ ДЕКЛАРАЦИЯ", "Отправить декладацию до 31 декабря");
+        Task task3 = new Task("НАЛОГОВАЯ ДЕКЛАРАЦИЯ", "Отправить декларацию до 31 декабря");
         taskManager.createTask(task3);
 
         Task task4 = new Task("ЧЕМОДАН", "Размер L - заказать, забрать.");
@@ -83,21 +85,25 @@ public class Main {
         task3.setStatus(Status.DONE);
         taskManager.updateTask(task3);
         int idTask3 = task3.getId();
-        System.out.println("Task by id - must be DONE: \n" + taskManager.getTask(idTask3));
+        System.out.println("Task by id - must be DONE: ");
+        System.out.println(taskManager.getTask(idTask3));
 
         printTitle("Тест 6: Изменения в Subtask - DONE");
         subtask31.setStatus(Status.DONE);
         taskManager.updateSubtask(subtask31);
         int idSub31 = subtask31.getId();
-        System.out.println("Subs by id - must be DONE: \n" + taskManager.getTask(idSub31));
+        System.out.println("Subs by id - must be DONE: ");
+        System.out.println(taskManager.getTask(idSub31));
         int idEpic3 = epics2.get(0).getId();
-        System.out.println("Epic by id - check status: \n" + taskManager.getTask(idEpic3));
+        System.out.println("Epic by id - check status: ");
+        System.out.println(taskManager.getTask(idEpic3));
 
 
         printTitle("Тест 7: Изменения в Epic - DONE");
         epic3.setStatus(Status.DONE);
         taskManager.updateEpic(epic3);
-        System.out.println("Epic by id - check status: \n" + taskManager.getTask(idEpic3));
+        System.out.println("Epic by id - check status: ");
+        System.out.println(taskManager.getTask(idEpic3));
 
 
         printTitle("Тест 8: Все Subtasks в одном Epic - DONE");
@@ -106,9 +112,12 @@ public class Main {
         subtask32.setStatus(Status.DONE);
         taskManager.updateSubtask(subtask32);
         int idSub32 = subtask32.getId();
-        System.out.println("Subs by id - must be DONE: \n" + taskManager.getTask(idSub31));
-        System.out.println("Subs by id - must be DONE: \n" + taskManager.getTask(idSub32));
-        System.out.println("Epic by id - check status: \n" + taskManager.getTask(idEpic3));
+        System.out.println("Subs by id - must be DONE: ");
+        System.out.println(taskManager.getTask(idSub31));
+        System.out.println("Subs by id - must be DONE: ");
+        System.out.println(taskManager.getTask(idSub32));
+        System.out.println("Epic by id - check status: ");
+        System.out.println(taskManager.getTask(idEpic3));
 
 
         printTitle("Тест 9: Все Subtasks в одном Epic - NEW");
@@ -116,9 +125,12 @@ public class Main {
         taskManager.updateSubtask(subtask31);
         subtask32.setStatus(Status.NEW);
         taskManager.updateSubtask(subtask32);
-        System.out.println("Subs by id - must be NEW: \n" + taskManager.getTask(idSub31));
-        System.out.println("Subs by id - must be NEW: \n" + taskManager.getTask(idSub32));
-        System.out.println("Epic by id - check status: \n" + taskManager.getTask(idEpic3));
+        System.out.println("Subs by id - must be NEW: ");
+        System.out.println(taskManager.getTask(idSub31));
+        System.out.println("Subs by id - must be NEW: ");
+        System.out.println(taskManager.getTask(idSub32));
+        System.out.println("Epic by id - check status: ");
+        System.out.println(taskManager.getTask(idEpic3));
 
 
         printTitle("Тест 10: Удаление по идентификатору");
@@ -137,14 +149,14 @@ public class Main {
         //    Epic:    НОВЫЙ ГОД
         printManagerHistory(taskManager);
 
-        printTitle("Тест 12: Не изменение истории просмотров при добалении тасков");
+        printTitle("Тест 12: Не изменение истории просмотров при добавлении тасков");
         Task task12_1 = new Task("ПОДГУЗНИКИ", "Продать на avito лишние");
         taskManager.createTask(task12_1);
 
         Epic epic12_1 = new Epic("ИПОТЕКА", "Купить ещё одну квартиру");
         taskManager.createEpic(epic12_1);
 
-        // история не должна была изменится с прошлого раза
+        // история не должна была измениться с прошлого раза
         printManagerHistory(taskManager);
 
         printTitle("Тест 13: Изменение истории после getTask");

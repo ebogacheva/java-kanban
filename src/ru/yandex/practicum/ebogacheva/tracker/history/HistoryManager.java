@@ -1,4 +1,6 @@
-package ru.yandex.practicum.ebogacheva.sprint3;
+package ru.yandex.practicum.ebogacheva.tracker.history;
+
+import ru.yandex.practicum.ebogacheva.tracker.tasks.Task;
 
 import java.util.List;
 

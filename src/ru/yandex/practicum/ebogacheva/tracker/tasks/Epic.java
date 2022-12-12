@@ -1,4 +1,5 @@
-package ru.yandex.practicum.ebogacheva.sprint3;
+package ru.yandex.practicum.ebogacheva.tracker.tasks;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class Epic extends Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + this.status +
-                ", subTasks=" + subIds + "\'" +
+                ", subTasks=" + subIds +
                 '}';
     }
 }

@@ -1,4 +1,7 @@
-package ru.yandex.practicum.ebogacheva.sprint3;
+package ru.yandex.practicum.ebogacheva.tracker.tasks;
+
+import ru.yandex.practicum.ebogacheva.tracker.history.HistoryManager;
+import ru.yandex.practicum.ebogacheva.tracker.Managers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,10 +10,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private HashMap<Integer, Task> tasks;
-    private HashMap<Integer, Subtask> subtasks;
-    private HashMap<Integer, Epic> epics;
-    private HistoryManager historyManager;
+    private final HashMap<Integer, Task> tasks;
+    private final HashMap<Integer, Subtask> subtasks;
+    private final HashMap<Integer, Epic> epics;
+    private final HistoryManager historyManager;
     private static final AtomicInteger idProvider = new AtomicInteger(0);
 
     public InMemoryTaskManager() {
