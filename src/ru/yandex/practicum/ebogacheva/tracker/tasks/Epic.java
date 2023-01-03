@@ -16,22 +16,22 @@ public class Epic extends Task {
         return subIds;
     }
 
-    void setSubIds(List<Integer> subIds) {
+    public void setSubIds(List<Integer> subIds) {
         this.subIds = subIds;
         if (this.subIds == null) {
             this.subIds = new ArrayList<>();            
         }
     }
 
-    void removeSubTask(int id) {
+    public void removeSubTask(int id) {
         subIds.remove((Integer)id);
     }
 
-    void addSubTask(int id) {
+    public void addSubTask(int id) {
         subIds.add(id);
     }
 
-    void clearSubTasks() {
+    public void clearSubTasks() {
         subIds.clear();
         status = Status.NEW;
     }

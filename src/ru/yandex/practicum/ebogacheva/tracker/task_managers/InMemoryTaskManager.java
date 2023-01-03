@@ -1,7 +1,11 @@
-package ru.yandex.practicum.ebogacheva.tracker.tasks;
+package ru.yandex.practicum.ebogacheva.tracker.task_managers;
 
 import ru.yandex.practicum.ebogacheva.tracker.history.HistoryManager;
 import ru.yandex.practicum.ebogacheva.tracker.Managers;
+import ru.yandex.practicum.ebogacheva.tracker.tasks.Epic;
+import ru.yandex.practicum.ebogacheva.tracker.tasks.Status;
+import ru.yandex.practicum.ebogacheva.tracker.tasks.Subtask;
+import ru.yandex.practicum.ebogacheva.tracker.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -227,16 +231,16 @@ public class InMemoryTaskManager implements TaskManager {
         
         List<Subtask> epicSubs = getEpicSubtasks(epic);
         for (Subtask subtask : epicSubs){
-            if (subtask.status == Status.IN_PROGRESS) {
+            if (subtask.getStatus()== Status.IN_PROGRESS) {
                 return Status.IN_PROGRESS;
             } 
             
-            if (subtask.status == Status.NEW) {
+            if (subtask.getStatus() == Status.NEW) {
                 countNEW++;
                 if (countDONE > 0) {
                     return Status.IN_PROGRESS;
                 }
-            } else if (subtask.status == Status.DONE) {
+            } else if (subtask.getStatus() == Status.DONE) {
                 countDONE++;
                 if (countNEW > 0) {
                     return Status.IN_PROGRESS;
@@ -255,7 +259,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private Epic updateEpicStatus(Epic epic) {
-        epic.status = getEpicStatusBySubtasks(epic);
+        epic.setStatus(getEpicStatusBySubtasks(epic));
         return epic;
     }
 }

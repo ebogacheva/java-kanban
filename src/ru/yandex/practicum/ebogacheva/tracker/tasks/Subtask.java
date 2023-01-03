@@ -13,11 +13,11 @@ public class Subtask extends Task {
         return epicId;
     }
 
-    void setEpicId(int epicId) {
+    public void setEpicId(int epicId) {
         this.epicId = epicId;
     }
 
-    void resetEpicId() {
+    public void resetEpicId() {
         this.epicId = -1;
     }
     

@@ -1,4 +1,8 @@
-package ru.yandex.practicum.ebogacheva.tracker.tasks;
+package ru.yandex.practicum.ebogacheva.tracker.task_managers;
+
+import ru.yandex.practicum.ebogacheva.tracker.tasks.Epic;
+import ru.yandex.practicum.ebogacheva.tracker.tasks.Subtask;
+import ru.yandex.practicum.ebogacheva.tracker.tasks.Task;
 
 import java.util.List;
 
