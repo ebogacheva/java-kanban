@@ -35,12 +35,12 @@ public class InMemoryHistoryManager implements HistoryManager {
 class CustomLinkedList {
 
     private static class Node {
-        Task item;
+        Task task;
         Node next;
         Node prev;
 
-        Node(Node prev, Task element, Node next) {
-            this.item = element;
+        Node(Node prev, Task task, Node next) {
+            this.task = task;
             this.next = next;
             this.prev = prev;
         }
@@ -117,9 +117,9 @@ class CustomLinkedList {
         }
         List<Task> historyInList = new ArrayList<>();
         Node curr = this.head;
-        historyInList.add(curr.item);
+        historyInList.add(curr.task);
         while (curr.next != null) {
-            historyInList.add(curr.next.item);
+            historyInList.add(curr.next.task);
             curr = curr.next;
         }
         return historyInList;
