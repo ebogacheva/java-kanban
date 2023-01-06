@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -80,6 +81,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTaskById(int id) {
         this.tasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -94,6 +96,7 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatus(epic);
 
         this.subtasks.remove(id);
+        this.historyManager.remove(id);
     }
 
     @Override
@@ -101,9 +104,18 @@ public class InMemoryTaskManager implements TaskManager {
         if (!epics.containsKey(id)) {
             return;
         }
-
-        subtasks.entrySet().removeIf(a -> a.getValue().getEpicId() == id);
-        epics.remove(id);
+        List<Subtask> toRemove = subtasks
+                .values()
+                .stream()
+                .filter(a -> a.getEpicId() == id)
+                .collect(Collectors.toList());
+        for (Subtask subtaskToRemove : toRemove) {
+            int idToRemove = subtaskToRemove.getId();
+            this.subtasks.remove(idToRemove);
+            this.historyManager.remove(idToRemove);
+        }
+        this.historyManager.remove(id);
+        this.epics.remove(id);
     }
 
     @Override
@@ -259,7 +271,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private Epic updateEpicStatus(Epic epic) {
-        epic.setStatus(getEpicStatusBySubtasks(epic));
+        epic.status = getEpicStatusBySubtasks(epic);
         return epic;
     }
 }

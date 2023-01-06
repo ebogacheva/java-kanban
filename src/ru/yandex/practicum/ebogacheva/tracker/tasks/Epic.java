@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Epic extends Task {
 
+    public Status status;
     private List<Integer> subIds;
 
     public Epic(String title, String description) {
