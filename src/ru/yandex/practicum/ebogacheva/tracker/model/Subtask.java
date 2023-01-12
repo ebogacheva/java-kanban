@@ -1,16 +1,25 @@
-package ru.yandex.practicum.ebogacheva.tracker.tasks;
+package ru.yandex.practicum.ebogacheva.tracker.model;
 
 public class Subtask extends Task {
 
-    private int epicId;
+    protected int epicId;
 
     public Subtask(String title, String description, int epicId) {
         super(title, description);
         this.epicId = epicId;
     }
 
+    public Subtask(int id, String title, String description, Status status, int epicId) {
+        super(id, title, description, status);
+        this.epicId = epicId;
+    }
+
+    public Subtask(Subtask subtask) {
+        this(subtask.getId(), subtask.getTitle(), subtask.getDescription(), subtask.getStatus(), subtask.getEpicId());
+    }
+
     public int getEpicId() {
-        return epicId;
+        return this.epicId;
     }
 
     public void setEpicId(int epicId) {
@@ -24,7 +33,6 @@ public class Subtask extends Task {
     public boolean isAttachedToEpic() {
         return this.epicId > -1;
     }
-
 
     @Override
     public String toString() {

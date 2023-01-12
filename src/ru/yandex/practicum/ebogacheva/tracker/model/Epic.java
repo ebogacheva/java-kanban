@@ -1,16 +1,24 @@
-package ru.yandex.practicum.ebogacheva.tracker.tasks;
+package ru.yandex.practicum.ebogacheva.tracker.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
 
-    public Status status;
     private List<Integer> subIds;
 
     public Epic(String title, String description) {
         super(title, description);
         subIds = new ArrayList<>();
+    }
+
+    public Epic(int id, String title, String description, Status status, List<Integer> subIds) {
+        super(id, title, description, status);
+        this.subIds = new ArrayList<>(subIds);
+    }
+
+    public Epic (Epic epic) {
+        this(epic.getId(), epic.getTitle(), epic.getDescription(), epic.getStatus(), epic.getSubIds());
     }
 
     public List<Integer> getSubIds() {
@@ -35,11 +43,6 @@ public class Epic extends Task {
     public void clearSubTasks() {
         subIds.clear();
         status = Status.NEW;
-    }
-
-    @Override
-    public void setStatus(Status status) {
-        System.out.println("ОШИБКА: Статус Epic не может быть установлен.");
     }
 
     @Override

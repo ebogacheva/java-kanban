@@ -1,6 +1,6 @@
 package ru.yandex.practicum.ebogacheva.tracker.history;
 
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Task;
+import ru.yandex.practicum.ebogacheva.tracker.model.Task;
 
 import java.util.List;
 

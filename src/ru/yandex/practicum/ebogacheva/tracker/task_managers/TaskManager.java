@@ -1,8 +1,8 @@
 package ru.yandex.practicum.ebogacheva.tracker.task_managers;
 
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Epic;
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Subtask;
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Task;
+import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
+import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;
+import ru.yandex.practicum.ebogacheva.tracker.model.Task;
 
 import java.util.List;
 
@@ -12,6 +12,8 @@ public interface TaskManager {
     Epic createEpic(Epic epic);
 
     Task getTask(int id);
+    Epic getEpic(int id);
+    Subtask getSubtask(int id);
 
     List<Subtask> getEpicSubtasks(Epic epic);
 

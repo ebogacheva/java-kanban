@@ -1,9 +1,9 @@
 package ru.yandex.practicum.ebogacheva.tracker;
 
 import ru.yandex.practicum.ebogacheva.tracker.task_managers.TaskManager;
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Epic;
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Subtask;
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Task;
+import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
+import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;
+import ru.yandex.practicum.ebogacheva.tracker.model.Task;
 
 import java.util.List;
 
@@ -17,6 +17,10 @@ public class TestUtils {
         System.out.println("-----: " + title);
     }
 
+    static void printLine(String line) {
+        System.out.println("- " +line);
+    }
+
     private static void printTasks(List<Task> tasks, List<Subtask> subtasks, List<Epic> epics) {
         printTitle("Список всех задач");
         tasks.forEach(System.out::println);
@@ -26,7 +30,7 @@ public class TestUtils {
 
     static void printManagerHistory(TaskManager manager) {
         List<Task> history = manager.getHistory();
-        printTitle("История просмотра задач");
+        System.out.println("История просмотра задач");
         history.forEach(System.out::println);
     }
 

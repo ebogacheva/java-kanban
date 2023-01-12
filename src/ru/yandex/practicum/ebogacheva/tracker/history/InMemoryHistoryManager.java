@@ -1,6 +1,6 @@
 package ru.yandex.practicum.ebogacheva.tracker.history;
 
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Task;
+import ru.yandex.practicum.ebogacheva.tracker.model.Task;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,17 +91,18 @@ public class InMemoryHistoryManager implements HistoryManager {
             return newNode;
         }
 
+
         private void removeNode(Node<T> node) {
             final Node<T> currPrev = node.prev;
             final Node<T> currNext = node.next;
             if (currPrev == null) {
                 this.head = currNext;
-                currNext.prev = null;
-            } else if (currNext == null) {
-                this.tail = currPrev;
-                currPrev.next = null;
             } else {
                 currPrev.next = currNext;
+            }
+            if (currNext == null) {
+                this.tail = currPrev;
+            } else {
                 currNext.prev = currPrev;
             }
 

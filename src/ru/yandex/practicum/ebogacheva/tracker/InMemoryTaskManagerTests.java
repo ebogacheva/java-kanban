@@ -1,10 +1,10 @@
 package ru.yandex.practicum.ebogacheva.tracker;
 
 import ru.yandex.practicum.ebogacheva.tracker.task_managers.TaskManager;
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Epic;
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Status;
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Subtask;
-import ru.yandex.practicum.ebogacheva.tracker.tasks.Task;
+import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
+import ru.yandex.practicum.ebogacheva.tracker.model.Status;
+import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;
+import ru.yandex.practicum.ebogacheva.tracker.model.Task;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
-package ru.yandex.practicum.ebogacheva.tracker.tasks;
+package ru.yandex.practicum.ebogacheva.tracker.model;
 
 import java.util.Objects;
 
 public class Task {
 
-    private int id;
+    protected int id;
     protected final String title;
     protected final String description;
     protected Status status;
@@ -16,8 +16,19 @@ public class Task {
         this.status = Status.NEW;
     }
 
+    public Task(int id, String title, String description, Status status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+    }
+
+    public Task(Task task) {
+        this(task.getId(), task.getTitle(), task.getDescription(), task.getStatus());
+    }
+
     public Status getStatus() {
-        return status;
+        return this.status;
     }
 
     public void setStatus(Status status) {
@@ -25,11 +36,19 @@ public class Task {
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
@@ -54,6 +73,5 @@ public class Task {
                 ", status=" + status +
                 '}';
     }
-
 }
 

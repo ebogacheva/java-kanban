@@ -1,4 +1,4 @@
-package ru.yandex.practicum.ebogacheva.tracker.tasks;
+package ru.yandex.practicum.ebogacheva.tracker.model;
 
 public enum Status {
     NEW,

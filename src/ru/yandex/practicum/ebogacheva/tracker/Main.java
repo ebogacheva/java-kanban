@@ -1,6 +1,5 @@
 package ru.yandex.practicum.ebogacheva.tracker;
 
-import ru.yandex.practicum.ebogacheva.tracker.history.InMemoryHistoryManager;
 import ru.yandex.practicum.ebogacheva.tracker.task_managers.TaskManager;
 
 public class Main {
@@ -9,12 +8,18 @@ public class Main {
 
         TaskManager taskManager = Managers.getDefault();
 
-        // Тестирование Трекера задач (Спринт 3,4)
-        // InMemoryTaskManagerTests.testInMemoryTaskManager(taskManager);
+        // Внесла принципиальное изменение в таски и менеджер.
+        // При обращении к мененджеру за тасками (по id или списком) - создается копия таска, существующего в менеджере.
+        // Копия создается через конструктор тасков / эпиков / подзадач. У копии и исходного таска совпадают id.
+        // Но это разные объекты.
 
-        // Тестирование CustomLinkedList и InMemoryHistoryManager
+        //Тестирование Трекера задач (Спринт 3,4)
+        InMemoryTaskManagerTestsUpdate.testInMemoryTaskManager(taskManager);
+
+        // Тестирование CustomLinkedList и InMemoryHistoryManager (Спринт 5)
         InMemoryHistoryManagerTests.testInMemoryHistoryManager(taskManager);
-    }
 
+
+    }
 
 }
