@@ -32,18 +32,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private static class CustomLinkedList<T extends Task> {
 
-        private static class Node<T extends Task> {
-            final T task;
-            Node<T> next;
-            Node<T> prev;
-
-            Node(Node<T> prev, T task, Node<T> next) {
-                this.task = task;
-                this.next = next;
-                this.prev = prev;
-            }
-        }
-
         private final Map<Integer, Node<T>> historyInMap;
         private Node<T> head;
         private Node<T> tail;

@@ -1,6 +1,8 @@
 package ru.yandex.practicum.ebogacheva.tracker;
 
 import ru.yandex.practicum.ebogacheva.tracker.task_managers.TaskManager;
+import ru.yandex.practicum.ebogacheva.tracker.tests.InMemoryHistoryManagerTests;
+import ru.yandex.practicum.ebogacheva.tracker.tests.InMemoryTaskManagerTestsUpdate;
 
 public class Main {
 

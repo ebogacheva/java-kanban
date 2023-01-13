@@ -284,7 +284,11 @@ public class InMemoryTaskManager implements TaskManager {
         int countNEW = 0;
         int countDONE = 0;
         
-        List<Subtask> epicSubs = getEpicSubtasks(epic);
+        List<Subtask> epicSubs = new ArrayList<>();
+        for (Integer id : epic.getSubIds()) {
+            Subtask subtask = subtasks.get(id);
+            epicSubs.add(subtask);
+        }
         for (Subtask subtask : epicSubs){
             if (subtask.getStatus()== Status.IN_PROGRESS) {
                 return Status.IN_PROGRESS;
