@@ -6,6 +6,7 @@ import java.util.List;
 public class Epic extends Task {
 
     private List<Integer> subIds;
+    private final TaskType type = TaskType.EPIC;
 
     public Epic(String title, String description) {
         super(title, description);
@@ -54,5 +55,10 @@ public class Epic extends Task {
                 ", status=" + this.status +
                 ", subTasks=" + subIds +
                 '}';
+    }
+
+    @Override
+    public String toFileString() {
+        return super.toFileString();
     }
 }

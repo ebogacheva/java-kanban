@@ -1,8 +1,6 @@
 package ru.yandex.practicum.ebogacheva.tracker;
 
 import ru.yandex.practicum.ebogacheva.tracker.task_managers.TaskManager;
-import ru.yandex.practicum.ebogacheva.tracker.tests.InMemoryHistoryManagerTests;
-import ru.yandex.practicum.ebogacheva.tracker.tests.InMemoryTaskManagerTestsUpdate;
 
 public class Main {
 
@@ -16,10 +14,10 @@ public class Main {
         // Но это разные объекты.
 
         //Тестирование Трекера задач (Спринт 3,4)
-        InMemoryTaskManagerTestsUpdate.testInMemoryTaskManager(taskManager);
+        //InMemoryTaskManagerTestsUpdate.testInMemoryTaskManager(taskManager);
 
         // Тестирование CustomLinkedList и InMemoryHistoryManager (Спринт 5)
-        InMemoryHistoryManagerTests.testInMemoryHistoryManager(taskManager);
+        //InMemoryHistoryManagerTests.testInMemoryHistoryManager(taskManager);
 
 
     }

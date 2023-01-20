@@ -8,6 +8,7 @@ public class Task {
     protected final String title;
     protected final String description;
     protected Status status;
+    private final TaskType type = TaskType.TASK;
 
     public Task(String title, String description) {
         this.id = 0;
@@ -51,6 +52,10 @@ public class Task {
         return description;
     }
 
+    public TaskType getType() {
+        return this.type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,5 +78,15 @@ public class Task {
                 ", status=" + status +
                 '}';
     }
+
+    public String toFileString() {
+        return String.join(",",
+                String.valueOf(this.id),
+                this.type.name(),
+                this.title,
+                this.status.name(),
+                this.description);
+    }
+
 }
 

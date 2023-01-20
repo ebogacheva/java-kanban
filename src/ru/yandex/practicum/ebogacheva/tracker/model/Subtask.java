@@ -3,6 +3,7 @@ package ru.yandex.practicum.ebogacheva.tracker.model;
 public class Subtask extends Task {
 
     protected int epicId;
+    private final TaskType type = TaskType.SUBTASK;
 
     public Subtask(String title, String description, int epicId) {
         super(title, description);
@@ -43,5 +44,10 @@ public class Subtask extends Task {
                 ", status=" + status +
                 ", epicID=" + epicId +
                 '}';
+    }
+
+    @Override
+    public String toFileString() {
+        return super.toFileString() + "," + this.epicId;
     }
 }
