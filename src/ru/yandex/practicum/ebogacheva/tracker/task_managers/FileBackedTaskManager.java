@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,17 +22,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
     }
 
     public void save() throws ManagerSaveException {
-        try (FileWriter fileWriter = new FileWriter(this.fileName, StandardCharsets.UTF_8, true)) {
+        try (FileWriter fileWriter = new FileWriter(this.fileName, StandardCharsets.UTF_8)) {
             List<Task> saveToFile = new ArrayList<>(this.tasks.values());
             saveToFile.addAll(this.epics.values());
             saveToFile.addAll(this.subtasks.values());
-            saveToFile.sort(Comparator.comparingInt(Task::getId).reversed());
+            saveToFile.sort(Comparator.comparingInt(Task::getId));
             for (Task task : saveToFile) {
-                fileWriter.write(task.toFileString());
+                fileWriter.write(task.toFileString() + "\n");
             }
+            fileWriter.write("\n\n");
+            for (Task task: this.historyManager.getHistory()) {
+                fileWriter.write(task.getId() + ",");
+            }
+
         } catch (IOException e) {
             throw new ManagerSaveException();
         }
+
     }
 
     @Override

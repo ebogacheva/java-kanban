@@ -59,6 +59,11 @@ public class Epic extends Task {
 
     @Override
     public String toFileString() {
-        return super.toFileString();
+        return String.join(",",
+                String.valueOf(this.id),
+                this.type.name(),
+                this.title,
+                this.status.name(),
+                this.description);
     }
 }
