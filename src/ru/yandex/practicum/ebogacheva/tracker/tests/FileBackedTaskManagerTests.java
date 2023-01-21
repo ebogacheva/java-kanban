@@ -3,7 +3,12 @@ package ru.yandex.practicum.ebogacheva.tracker.tests;
 import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
 import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;
 import ru.yandex.practicum.ebogacheva.tracker.model.Task;
+import ru.yandex.practicum.ebogacheva.tracker.model.TaskType;
+import ru.yandex.practicum.ebogacheva.tracker.task_managers.FileBackedTaskManager;
 import ru.yandex.practicum.ebogacheva.tracker.task_managers.TaskManager;
+
+import java.io.File;
+import java.util.List;
 
 public class FileBackedTaskManagerTests {
 
@@ -46,6 +51,30 @@ public class FileBackedTaskManagerTests {
 
         TestUtils.printTitle("Полученные задачи:");
         TestUtils.printAllTasks(taskManager);
+
+        System.out.println();
+        TestUtils.printTitle("Тест 2: Получение по идентификатору");
+        TestUtils.printLine("Получили списки задач, подзадач, эпиков. Запросили id у первого элемента в каждом списке.");
+        List<Task> tasks2 = taskManager.getTasks();
+        List<Subtask> subtasks2 = taskManager.getSubtasks();
+        List<Epic> epics2 = taskManager.getEpics();
+        TestUtils.printLine("Запросили в TaskManager первые в списках Задачу (id 1), " +
+                "Подзадачу (id 4), Эпик (id 3) - по полученным из списков id.");
+        Task newTask = taskManager.getTask(tasks2.get(0).getId());
+        Subtask newSubtask = taskManager.getSubtask(subtasks2.get(0).getId());
+        Epic newEpic = taskManager.getEpic(epics2.get(0).getId());
+        System.out.println("Task by id (1): " + newTask);
+        System.out.println("Epic by id (3): " + newEpic);
+        System.out.println("Subs by id (4): " + newSubtask);
+
+        System.out.println();
+
+
+        System.out.println();
+        TestUtils.printTitle("Тест 3: Восстановление данных менеджера из файла при запуске.");
+        File file = new File("test1.txt");
+        TaskManager taskManagerNEW = FileBackedTaskManager.loadFromFile(file);
+        TestUtils.printManagerHistory(taskManagerNEW);
     }
 
 }

@@ -160,15 +160,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task createTask(Task task) {
+    public void createTask(Task task) {
         int id = idProvider.incrementAndGet();
         task.setId(id);
         tasks.put(id, task);
-        return task;
     }
 
     @Override
-    public Subtask createSubtask(Subtask subtask) {
+    public void createSubtask(Subtask subtask) {
         int id = idProvider.incrementAndGet();
         subtask.setId(id);
         subtasks.put(id, subtask);
@@ -176,16 +175,13 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(subtask.getEpicId());
         epic.addSubTask(id);
         updateEpicStatus(epic);
-
-        return subtask;
     }
 
     @Override
-    public Epic createEpic(Epic epic) {
+    public void createEpic(Epic epic) {
         int id = idProvider.incrementAndGet();
         epic.setId(id);
         epics.put(id, updateEpicStatus(epic));
-        return epic;
     }
 
     @Override

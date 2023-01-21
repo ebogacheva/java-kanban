@@ -7,9 +7,9 @@ import ru.yandex.practicum.ebogacheva.tracker.model.Task;
 import java.util.List;
 
 public interface TaskManager {
-    Task createTask(Task task);
-    Subtask createSubtask(Subtask subtask);
-    Epic createEpic(Epic epic);
+    void createTask(Task task);
+    void createSubtask(Subtask subtask);
+    void createEpic(Epic epic);
 
     Task getTask(int id);
     Epic getEpic(int id);

@@ -8,7 +8,7 @@ public class Task {
     protected final String title;
     protected final String description;
     protected Status status;
-    private final TaskType type = TaskType.TASK;
+    protected TaskType type = TaskType.TASK;
 
     public Task(String title, String description) {
         this.id = 0;

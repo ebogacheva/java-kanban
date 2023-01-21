@@ -2,6 +2,7 @@ package ru.yandex.practicum.ebogacheva.tracker;
 
 import ru.yandex.practicum.ebogacheva.tracker.task_managers.TaskManager;
 import ru.yandex.practicum.ebogacheva.tracker.tests.FileBackedTaskManagerTests;
+import ru.yandex.practicum.ebogacheva.tracker.tests.InMemoryHistoryManagerTests;
 
 public class Main {
 
@@ -23,7 +24,6 @@ public class Main {
         // Тестирование FileBAckedTaskManager (Спринт 6)
         TaskManager taskManager = Managers.getFileBackedManager("test1.txt");
         FileBackedTaskManagerTests.testFileBackedTaskManager(taskManager);
-
 
     }
 

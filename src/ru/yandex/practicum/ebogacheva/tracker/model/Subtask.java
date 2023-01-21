@@ -3,16 +3,17 @@ package ru.yandex.practicum.ebogacheva.tracker.model;
 public class Subtask extends Task {
 
     protected int epicId;
-    private final TaskType type = TaskType.SUBTASK;
 
     public Subtask(String title, String description, int epicId) {
         super(title, description);
         this.epicId = epicId;
+        this.type = TaskType.SUBTASK;
     }
 
     public Subtask(int id, String title, String description, Status status, int epicId) {
         super(id, title, description, status);
         this.epicId = epicId;
+        this.type = TaskType.SUBTASK;
     }
 
     public Subtask(Subtask subtask) {
