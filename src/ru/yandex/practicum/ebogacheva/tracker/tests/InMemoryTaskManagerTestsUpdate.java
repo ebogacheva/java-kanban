@@ -4,7 +4,7 @@ import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
 import ru.yandex.practicum.ebogacheva.tracker.model.Status;
 import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;
 import ru.yandex.practicum.ebogacheva.tracker.model.Task;
-import ru.yandex.practicum.ebogacheva.tracker.task_managers.TaskManager;
+import ru.yandex.practicum.ebogacheva.tracker.managers.TaskManager;
 
 import java.util.List;
 

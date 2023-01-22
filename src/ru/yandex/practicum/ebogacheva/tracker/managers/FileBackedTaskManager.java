@@ -1,4 +1,4 @@
-package ru.yandex.practicum.ebogacheva.tracker.task_managers;
+package ru.yandex.practicum.ebogacheva.tracker.managers;
 
 import ru.yandex.practicum.ebogacheva.tracker.exceptions.ManagerSaveException;
 import ru.yandex.practicum.ebogacheva.tracker.history.HistoryManager;
@@ -47,53 +47,51 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
 
     public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
         List<String> loadedFromFile;
+
         try (Stream<String> lines = Files.lines(Paths.get(file.getPath()))) {
             loadedFromFile = lines.collect(Collectors.toList());
         } catch (IOException e) {
             throw new ManagerSaveException();
         }
-        FileBackedTaskManager taskManager = new FileBackedTaskManager(file.getPath());
 
-        if (!loadedFromFile.isEmpty()) {
-            for (String line : loadedFromFile) {
-                if (!line.isBlank()) {
-                    String[] separatedLine=line.split(",");
-                    if (separatedLine[1].equals(TaskType.TASK.name())) {
-                        Task task = fromString(line);
-                        if (task != null) {
-                            taskManager.tasks.put(task.getId(), task);
-                        }
-                    } else if (separatedLine[1].equals(TaskType.EPIC.name())) {
-                        Epic epic = (Epic) fromString(line);
-                        if (epic != null) {
-                            taskManager.epics.put(epic.getId(), epic);
-                        }
-                    } else if (separatedLine[1].equals(TaskType.SUBTASK.name())) {
-                        Subtask subtask = (Subtask) fromString(line);
-                        if (subtask != null) {
-                            taskManager.subtasks.put(subtask.getId(), subtask);
-                            int epicId = Integer.parseInt(separatedLine[5]);
-                            Epic epic = taskManager.epics.get(epicId);
-                            List<Integer> subIds = epic.getSubIds();
-                            subIds.add(subtask.getId());
-                        }
-                    } else {
-                        List<Integer> history = historyFromString(line);
-                        for (Integer taskId : history) {
-                            if (taskManager.tasks.containsKey(taskId)) {
-                                taskManager.historyManager.add(taskManager.tasks.get(taskId));
-                            } else if (taskManager.epics.containsKey(taskId)) {
-                                taskManager.historyManager.add(taskManager.epics.get(taskId));
-                            } else if (taskManager.subtasks.containsKey(taskId)) {
-                                taskManager.historyManager.add(taskManager.subtasks.get(taskId));
-                            }
-                        }
+        FileBackedTaskManager taskManager = new FileBackedTaskManager(file.getPath());
+        if(loadedFromFile.isEmpty()) {
+            return taskManager;
+        }
+        for (String line : loadedFromFile) {
+            if (line.isBlank()) {
+                continue;
+            }
+            Task task = fromString(line);
+            if (task == null) {
+                List<Integer> history = historyFromString(line);
+                for (Integer taskId : history) {
+                    if (taskManager.tasks.containsKey(taskId)) {
+                        taskManager.historyManager.add(taskManager.tasks.get(taskId));
+                    } else if (taskManager.epics.containsKey(taskId)) {
+                        taskManager.historyManager.add(taskManager.epics.get(taskId));
+                    } else if (taskManager.subtasks.containsKey(taskId)) {
+                        taskManager.historyManager.add(taskManager.subtasks.get(taskId));
                     }
                 }
+                continue;
+            }
+            if (task.getType().equals(TaskType.TASK)) {
+                taskManager.tasks.put(task.getId(), task);
+            } else if (task.getType().equals(TaskType.EPIC)) {
+                taskManager.epics.put(task.getId(), (Epic) task);
+            } else if (task.getType().equals(TaskType.SUBTASK)) {
+                Subtask subtask = (Subtask) task;
+                taskManager.subtasks.put(task.getId(), subtask);
+                int epicId = subtask.getEpicId();
+                Epic epic = taskManager.epics.get(epicId);
+                List<Integer> subIds = epic.getSubIds();
+                subIds.add(subtask.getId());
             }
         }
         return taskManager;
     }
+
 
     private static String historyToString(HistoryManager historyManager) {
         StringBuilder historySb = new StringBuilder();

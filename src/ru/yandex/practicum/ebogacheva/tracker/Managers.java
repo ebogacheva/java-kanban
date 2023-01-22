@@ -2,9 +2,9 @@ package ru.yandex.practicum.ebogacheva.tracker;
 
 import ru.yandex.practicum.ebogacheva.tracker.history.HistoryManager;
 import ru.yandex.practicum.ebogacheva.tracker.history.InMemoryHistoryManager;
-import ru.yandex.practicum.ebogacheva.tracker.task_managers.FileBackedTaskManager;
-import ru.yandex.practicum.ebogacheva.tracker.task_managers.InMemoryTaskManager;
-import ru.yandex.practicum.ebogacheva.tracker.task_managers.TaskManager;
+import ru.yandex.practicum.ebogacheva.tracker.managers.FileBackedTaskManager;
+import ru.yandex.practicum.ebogacheva.tracker.managers.InMemoryTaskManager;
+import ru.yandex.practicum.ebogacheva.tracker.managers.TaskManager;
 
 public class Managers {
 

@@ -9,10 +9,10 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private final CustomLinkedList<Task> history;
+    private final CustomLinkedList history;
 
     public InMemoryHistoryManager() {
-        this.history =new CustomLinkedList<>();
+        this.history =new CustomLinkedList();
     }
 
     @Override
@@ -30,11 +30,11 @@ public class InMemoryHistoryManager implements HistoryManager {
         return history.getTasks();
     }
 
-    private static class CustomLinkedList<T extends Task> {
+    private static class CustomLinkedList {
 
-        private final Map<Integer, Node<T>> historyInMap;
-        private Node<T> head;
-        private Node<T> tail;
+        private final Map<Integer, Node<Task>> historyInMap;
+        private Node<Task> head;
+        private Node<Task> tail;
         private int size;
 
         CustomLinkedList() {
@@ -44,10 +44,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             this.size = 0;
         }
 
-        public void add(T task) {
+        public void add(Task task) {
 
             final int currId = task.getId();
-            Node<T> curr = getById(currId);
+            Node<Task> curr = getById(currId);
             if (curr != null) {
                 removeNode(curr);
             }
@@ -55,20 +55,20 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         public void remove(int id) {
-            Node<T> curr = getById(id);
+            Node<Task> curr = getById(id);
             if (curr != null) {
                 removeNode(curr);
             }
         }
 
-        private Node<T> getById(int id) {
+        private Node<Task> getById(int id) {
             return this.historyInMap.remove(id);
         }
 
-        private Node<T> linkLast(T task) {
+        private Node<Task> linkLast(Task task) {
 
-            final Node<T> oldTail = this.tail;
-            final Node<T> newNode = new Node<>(oldTail, task, null);
+            final Node<Task> oldTail = this.tail;
+            final Node<Task> newNode = new Node<>(oldTail, task, null);
             this.tail = newNode;
             if (oldTail == null) {
                 this.head = newNode;
@@ -79,10 +79,14 @@ public class InMemoryHistoryManager implements HistoryManager {
             return newNode;
         }
 
+        // Я поняла, что надо убрать параметризацию у класса CustomLinkedList (потому что он private).
+        // Параметризация остается только класса Node.
+        // Тогда внутри CustomLinkedList мы уже будем иметь Node<Task>.
+        // Все верно?
 
-        private void removeNode(Node<T> node) {
-            final Node<T> currPrev = node.prev;
-            final Node<T> currNext = node.next;
+        private void removeNode(Node<Task> node) {
+            final Node<Task> currPrev = node.prev;
+            final Node<Task> currNext = node.next;
             if (currPrev == null) {
                 this.head = currNext;
             } else {
@@ -105,7 +109,7 @@ public class InMemoryHistoryManager implements HistoryManager {
                 return Collections.emptyList();
             }
             List<Task> historyInList = new ArrayList<>();
-            for (Node<T> node = this.head; node != null; node = node.next) {
+            for (Node<Task> node = this.head; node != null; node = node.next) {
                 historyInList.add(node.task);
             }
             return historyInList;

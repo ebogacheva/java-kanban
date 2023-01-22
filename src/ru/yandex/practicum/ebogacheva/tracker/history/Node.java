@@ -2,7 +2,7 @@ package ru.yandex.practicum.ebogacheva.tracker.history;
 
 import ru.yandex.practicum.ebogacheva.tracker.model.Task;
 
-class Node<T extends Task> {
+class Node<T> {
 
     final T task;
     Node<T> next;

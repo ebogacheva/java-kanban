@@ -1,4 +1,4 @@
-package ru.yandex.practicum.ebogacheva.tracker.task_managers;
+package ru.yandex.practicum.ebogacheva.tracker.managers;
 
 import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
 import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;

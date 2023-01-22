@@ -1,4 +1,4 @@
-package ru.yandex.practicum.ebogacheva.tracker.task_managers;
+package ru.yandex.practicum.ebogacheva.tracker.managers;
 
 import ru.yandex.practicum.ebogacheva.tracker.history.HistoryManager;
 import ru.yandex.practicum.ebogacheva.tracker.Managers;
