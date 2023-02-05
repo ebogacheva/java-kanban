@@ -20,7 +20,7 @@ public class InMemoryTaskManagerTests {
         taskManager.createTask(task2);
 
         // Создать один эпик с 2 подзадачами, ...
-        Epic epic1 = new Epic("Новый год", "Организовать праздник",60);
+        Epic epic1 = new Epic("Новый год", "Организовать праздник");
         taskManager.createEpic(epic1);
 
         Subtask subtask11 = new Subtask("Елка", "Купить до 30 декабря", 60, epic1.getId());
@@ -30,7 +30,7 @@ public class InMemoryTaskManagerTests {
         taskManager.createSubtask(subtask12);
 
         // а другой эпик с 1 подзадачей.
-        Epic epic2 = new Epic("Ремонт", "Обновить детскую комнату", 60);
+        Epic epic2 = new Epic("Ремонт", "Обновить детскую комнату");
         taskManager.createEpic(epic2);
 
         Subtask subtask21 = new Subtask("Материалы", "Купить обои, клей, ламинат, краску, валики", 60, epic2.getId());
@@ -51,7 +51,7 @@ public class InMemoryTaskManagerTests {
         taskManager.createTask(task4);
 
         // Создать один эпик с 2 подзадачами
-        Epic epic3 = new Epic("НОВЫЙ ГОД", "Организовать праздник",60);
+        Epic epic3 = new Epic("НОВЫЙ ГОД", "Организовать праздник");
         taskManager.createEpic(epic3);
 
         Subtask subtask31 = new Subtask("ЕЛКА", "Купить до 30 декабря", 60, epic3.getId());
@@ -61,7 +61,7 @@ public class InMemoryTaskManagerTests {
         taskManager.createSubtask(subtask32);
 
         // а другой эпик с 1 подзадачей.
-        Epic epic4 = new Epic("РЕМОНТ", "Обновить детскую комнату", 60);
+        Epic epic4 = new Epic("РЕМОНТ", "Обновить детскую комнату");
         taskManager.createEpic(epic4);
 
         Subtask subtask41 = new Subtask("МАТЕРИАЛЫ", "Купить обои, клей, ламинат, краску, валики", 60, epic4.getId());
@@ -152,7 +152,7 @@ public class InMemoryTaskManagerTests {
         Task task12_1 = new Task("ПОДГУЗНИКИ", "Продать на avito лишние", 60);
         taskManager.createTask(task12_1);
 
-        Epic epic12_1 = new Epic("ИПОТЕКА", "Купить ещё одну квартиру", 60);
+        Epic epic12_1 = new Epic("ИПОТЕКА", "Купить ещё одну квартиру");
         taskManager.createEpic(epic12_1);
 
         // история не должна была измениться с прошлого раза

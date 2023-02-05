@@ -23,8 +23,8 @@ public class InMemoryHistoryManagerTests {
         taskManager.createTask(task2);
         TestUtils.printLine("Создана Задача 2");
 
-        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1",60);
-        Epic epic2 = new Epic("Эпик 2", "Описание эпика 2",60);
+        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1");
+        Epic epic2 = new Epic("Эпик 2", "Описание эпика 2");
         taskManager.createEpic(epic1);
         TestUtils.printLine("Создан Эпик 1");
         taskManager.createEpic(epic2);
@@ -95,8 +95,8 @@ public class InMemoryHistoryManagerTests {
         taskManager.createTask(task4);
         TestUtils.printLine("Создана Задача 4");
 
-        Epic epic3 = new Epic("Эпик 3", "Описание эпика 3",60);
-        Epic epic4 = new Epic("Эпик 4", "Описание эпика 4",60);
+        Epic epic3 = new Epic("Эпик 3", "Описание эпика 3");
+        Epic epic4 = new Epic("Эпик 4", "Описание эпика 4");
         taskManager.createEpic(epic3);
         TestUtils.printLine("Создан Эпик 3");
         taskManager.createEpic(epic4);

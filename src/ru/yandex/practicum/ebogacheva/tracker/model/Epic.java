@@ -7,17 +7,13 @@ import java.util.List;
 public class Epic extends Task {
 
     private List<Integer> subIds;
+    private LocalDateTime endDateTime;
 
     public Epic(String title, String description) {
         super(title, description);
         subIds = new ArrayList<>();
         this.type = TaskType.EPIC;
-    }
-
-    public Epic(String title, String description, long duration) {
-        super(title, description, duration);
-        subIds = new ArrayList<>();
-        this.type = TaskType.EPIC;
+        this.endDateTime = null;
     }
 
     public Epic(int id,
@@ -51,6 +47,13 @@ public class Epic extends Task {
         if (this.subIds == null) {
             this.subIds = new ArrayList<>();            
         }
+    }
+    public LocalDateTime getEndDateTime() {
+        return this.endDateTime;
+    }
+
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
     }
 
     public void removeSubTask(int id) {

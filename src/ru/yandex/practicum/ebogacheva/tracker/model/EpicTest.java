@@ -67,8 +67,8 @@ class EpicTest {
         Status actualStatus2 = taskManager.getEpic(id).getStatus();
         Status expectedStatus2 = Status.NEW;
 
-        assertEquals(actualStatus1, expectedStatus1, "Статус эпика некорректный.");
-        assertEquals(actualStatus2, expectedStatus2, "Статус эпика некорректный.");
+        assertEquals(expectedStatus1, actualStatus1,"Статус эпика некорректный.");
+        assertEquals(expectedStatus2, actualStatus2, "Статус эпика некорректный.");
 
     }
 
@@ -89,8 +89,8 @@ class EpicTest {
         Status actualStatus2 = taskManager.getEpic(id).getStatus();
         Status expectedStatus2 = Status.DONE;
 
-        assertEquals(actualStatus1, expectedStatus1, "Статус эпика некорректный.");
-        assertEquals(actualStatus2, expectedStatus2, "Статус эпика некорректный.");
+        assertEquals(expectedStatus1, actualStatus1, "Статус эпика некорректный.");
+        assertEquals(expectedStatus2, actualStatus2, "Статус эпика некорректный.");
     }
 
     @Test
@@ -103,7 +103,7 @@ class EpicTest {
         taskManager.updateSubtask(subtask1);
         Status actualStatus1 = taskManager.getEpic(id).getStatus();
         Status expectedStatus1 = Status.IN_PROGRESS;
-        assertEquals(actualStatus1, expectedStatus1, "Статус эпика некорректный.");
+        assertEquals(expectedStatus1, actualStatus1, "Статус эпика некорректный.");
     }
 
     @Test
@@ -116,7 +116,7 @@ class EpicTest {
         taskManager.updateSubtask(subtask1);
         Status actualStatus1 = taskManager.getEpic(id).getStatus();
         Status expectedStatus1 = Status.IN_PROGRESS;
-        assertEquals(actualStatus1, expectedStatus1, "Статус эпика некорректный.");
+        assertEquals(expectedStatus1, actualStatus1, "Статус эпика некорректный.");
     }
 
 

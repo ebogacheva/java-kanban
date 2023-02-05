@@ -21,7 +21,7 @@ public class InMemoryTaskManagerTestsUpdate {
         taskManager.createTask(task2);
 
         // Создать один эпик с 2 подзадачами, ...
-        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1", 60);
+        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1");
         taskManager.createEpic(epic1);
 
         Subtask subtask11 = new Subtask("Подзадача 1 Эпик 1", "Описание подзадачи 1 эпик 1", 60, epic1.getId());
@@ -31,7 +31,7 @@ public class InMemoryTaskManagerTestsUpdate {
         taskManager.createSubtask(subtask12);
 
         // а другой эпик с 1 подзадачей.
-        Epic epic2 = new Epic("Эпик 2", "Описание эпика 2", 60);
+        Epic epic2 = new Epic("Эпик 2", "Описание эпика 2");
         taskManager.createEpic(epic2);
 
         Subtask subtask21 = new Subtask("Подзадача 1 Эпика 2", "Описание подзадачи 1 эпика 2", 60, epic2.getId());
@@ -69,7 +69,7 @@ public class InMemoryTaskManagerTestsUpdate {
         taskManager.createTask(task4);
 
         // Создать один эпик с 2 подзадачами
-        Epic epic3 = new Epic("Эпик 3", "Описание Эпика 3", 60);
+        Epic epic3 = new Epic("Эпик 3", "Описание Эпика 3");
         taskManager.createEpic(epic3);
 
         Subtask subtask31 = new Subtask("Подзадача 1 Эпика 3", "Описание подзадачи 1 эпика 3", 60, epic3.getId());
@@ -79,7 +79,7 @@ public class InMemoryTaskManagerTestsUpdate {
         taskManager.createSubtask(subtask32);
 
         // а другой эпик с 1 подзадачей.
-        Epic epic4 = new Epic("Эпик 4", "Описание Эпика 4", 60);
+        Epic epic4 = new Epic("Эпик 4", "Описание Эпика 4");
         taskManager.createEpic(epic4);
 
         Subtask subtask41 = new Subtask("Подзадача 1 Эпика 4", "Описание подзадачи 1 эпика 4", 60, epic4.getId());
@@ -215,7 +215,7 @@ public class InMemoryTaskManagerTestsUpdate {
         TestUtils.printLine("История не должна была измениться:");
         Task newTask2 = new Task("Новая задача", "Описание новой задачи.", 60);
         taskManager.createTask(newTask2);
-        Epic newEpic2 = new Epic("Новый эпик", "Описание нового эпика.", 60);
+        Epic newEpic2 = new Epic("Новый эпик", "Описание нового эпика.");
         taskManager.createEpic(newEpic2);
         // история не должна была измениться с прошлого раза
         TestUtils.printManagerHistory(taskManager);

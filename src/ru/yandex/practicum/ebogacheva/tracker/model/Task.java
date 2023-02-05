@@ -121,7 +121,7 @@ public class Task {
         return startDateTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public LocalDateTime getEndDateTime() {
         return getEndDateTimeFormatted();
     }
     public void setStartDateTime(LocalDateTime startDateTime) {

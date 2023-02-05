@@ -7,7 +7,7 @@ public class TestDataProvider {
     }
 
     public static Epic getEpicForTesting(int number) {
-        return new Epic("Test addNewEpic #" + number, "Test addNewEpic #" + number + " description", 60);
+        return new Epic("Test addNewEpic #" + number, "Test addNewEpic #" + number + " description");
     }
 
     public static Task getTaskForTesting(int number) {
