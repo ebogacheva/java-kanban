@@ -1,8 +1,17 @@
 package ru.yandex.practicum.ebogacheva.tracker.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Subtask extends Task {
 
     protected int epicId;
+
+    public Subtask(String title, String description, int epicId) {
+        super(title, description);
+        this.epicId = epicId;
+        this.type = TaskType.SUBTASK;
+    }
 
     public Subtask(String title, String description, long duration, int epicId) {
         super(title, description, duration);
@@ -10,10 +19,22 @@ public class Subtask extends Task {
         this.type = TaskType.SUBTASK;
     }
 
-    public Subtask(int id, String title, String description, Status status, long duration, int epicId) {
-        super(id, title, description, status, duration);
+    public Subtask(String title, String description, long duration, String startDateTime, int epicId) {
+        super(title, description, duration, startDateTime);
         this.epicId = epicId;
         this.type = TaskType.SUBTASK;
+    }
+
+    public Subtask(int id,
+                   String title,
+                   String description,
+                   Status status,
+                   long duration,
+                   LocalDateTime startDateTime,
+                   LocalDateTime endDateTime,
+                   int epicId) {
+        super(id, title, description, status, duration, startDateTime, endDateTime);
+        this.epicId = epicId;
     }
 
     public Subtask(Subtask subtask) {
@@ -22,6 +43,8 @@ public class Subtask extends Task {
                 subtask.getDescription(),
                 subtask.getStatus(),
                 subtask.getDuration().toMinutes(),
+                subtask.getStartTime(),
+                subtask.getEndTime(),
                 subtask.getEpicId());
     }
 
@@ -43,12 +66,9 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Subtask{" +
-                "ID=" + getId() +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", duration=" + duration.toString() +
+        String task = super.toString();
+        String taskShortened = task.substring(0, task.length() - 2);
+        return taskShortened +
                 ", epicID=" + epicId +
                 '}';
     }
@@ -56,12 +76,7 @@ public class Subtask extends Task {
     @Override
     public String toFileString() {
         return String.join(",",
-                String.valueOf(this.id),
-                this.type.name(),
-                this.title,
-                this.status.name(),
-                this.description,
-                this.duration.toString(),
+                super.toFileString(),
                 String.valueOf(this.epicId));
     }
 }

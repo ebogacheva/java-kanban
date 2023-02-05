@@ -1,5 +1,7 @@
 package ru.yandex.practicum.ebogacheva.tracker.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,19 +9,33 @@ public class Epic extends Task {
 
     private List<Integer> subIds;
 
+    public Epic(String title, String description) {
+        super(title, description);
+        subIds = new ArrayList<>();
+        this.type = TaskType.EPIC;
+        this.duration = Duration.ZERO;
+        this.startTime = null;
+        this.endTime = null;
+    }
+
     public Epic(String title, String description, long duration) {
         super(title, description, duration);
         subIds = new ArrayList<>();
         this.type = TaskType.EPIC;
+        this.duration = Duration.ofMinutes(duration);
+        this.startTime = null;
+        this.endTime = null;
     }
 
     public Epic(int id,
-                String title,
-                String description,
-                Status status,
-                List<Integer> subIds,
-                long duration) {
-        super(id, title, description, status, duration);
+                   String title,
+                   String description,
+                   Status status,
+                   long duration,
+                   LocalDateTime startDate,
+                   LocalDateTime endDate,
+                   List<Integer> subIds) {
+        super(id, title, description, status, duration, startDate, endDate);
         this.subIds = new ArrayList<>(subIds);
         this.type = TaskType.EPIC;
     }
@@ -29,8 +45,10 @@ public class Epic extends Task {
                 epic.getTitle(),
                 epic.getDescription(),
                 epic.getStatus(),
-                epic.getSubIds(),
-                epic.getDuration().toMinutes());
+                epic.getDuration().toMinutes(),
+                epic.getStartTime(),
+                epic.getEndTime(),
+                epic.getSubIds());
     }
 
     public List<Integer> getSubIds() {
@@ -59,12 +77,9 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{"+
-                "ID=" + getId() +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + this.status +
-                ", duration=" + duration.toString() +
+        String task = super.toString();
+        String taskShortened = task.substring(0, task.length() - 2);
+        return  taskShortened +
                 ", subTasks=" + subIds +
                 '}';
     }
@@ -72,12 +87,8 @@ public class Epic extends Task {
     @Override
     public String toFileString() {
         return String.join(",",
-                String.valueOf(this.id),
-                this.type.name(),
-                this.title,
-                this.status.name(),
-                this.description,
-                this.duration.toString());
+                super.toFileString(),
+                this.subIds.toString());
     }
 
 }

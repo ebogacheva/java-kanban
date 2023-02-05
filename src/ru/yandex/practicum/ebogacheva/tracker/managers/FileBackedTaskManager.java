@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -116,30 +120,47 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
     private static Task fromString(String value) {
         String[] taskInString = value.split(",");
         if (taskInString[1].equals(TaskType.TASK.name())) {
-            return new Task(Integer.parseInt(taskInString[0]),
-                    taskInString[2],
-                    taskInString[4],
-                    Status.valueOf(taskInString[3]),
-                    Long.parseLong(taskInString[5]));
+            return new Task(Integer.parseInt(taskInString[0]), // id
+                    taskInString[2], // title
+                    taskInString[4], // description
+                    Status.valueOf(taskInString[3]), // status
+                    Duration.parse(taskInString[5]).toMinutes(),
+                    getTaskDateTimeFromString(taskInString[6]),
+                    getTaskDateTimeFromString(taskInString[7]));
         }
         if (taskInString[1].equals(TaskType.EPIC.name())) {
             return new Epic(Integer.parseInt(taskInString[0]),
                     taskInString[2],
                     taskInString[4],
                     Status.valueOf(taskInString[3]),
-                    new ArrayList<>(),
-                    Long.parseLong(taskInString[5]));
+                    Duration.parse(taskInString[5]).toMinutes(),
+                    getTaskDateTimeFromString(taskInString[6]),
+                    getTaskDateTimeFromString(taskInString[7]),
+                    new ArrayList<>());
         }
         if (taskInString[1].equals(TaskType.SUBTASK.name())) {
             return new Subtask(Integer.parseInt(taskInString[0]),
                     taskInString[2],
                     taskInString[4],
                     Status.valueOf(taskInString[3]),
-                    Long.parseLong(taskInString[5]),
-                    Integer.parseInt(taskInString[5]));
+                    Duration.parse(taskInString[5]).toMinutes(),
+                    getTaskDateTimeFromString(taskInString[6]),
+                    getTaskDateTimeFromString(taskInString[7]),
+                    Integer.parseInt(taskInString[8]));
         }
         return null;
     }
+
+    private static LocalDateTime getTaskDateTimeFromString(String input) {
+        DateTimeFormatter formatterDateTime = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        LocalDateTime outputDateTime = null;
+        try {
+            outputDateTime = LocalDateTime.parse(input, formatterDateTime);
+        } catch (DateTimeParseException ignored) {
+        }
+        return outputDateTime;
+    }
+
 
     @Override
     public List<Task> getTasks() {

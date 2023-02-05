@@ -7,6 +7,7 @@ import ru.yandex.practicum.ebogacheva.tracker.model.Status;
 import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;
 import ru.yandex.practicum.ebogacheva.tracker.model.Task;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Epic> epics;
     protected final HistoryManager historyManager;
     protected static final AtomicInteger idProvider = new AtomicInteger(0);
+    private enum EditEpicDuration {MINUS_MINUTES, PLUS_MINUTES};
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -177,6 +179,16 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(subtask.getEpicId());
         epic.addSubTask(id);
         updateEpicStatus(epic);
+        updateEpicDuration(epic);
+    }
+
+    private void updateEpicDuration(Epic epic) {
+        Duration newEpicDuration = Duration.ZERO;
+        if (epic.getSubIds().isEmpty()) {
+            epic.setDuration(newEpicDuration);
+            return;
+        }
+        List<Subtask> epicSubs = new ArrayList<>();
     }
 
     @Override
@@ -229,6 +241,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.addSubTask(subtask.getId());
         }
         updateEpicStatus(epic);
+
     }
 
     @Override

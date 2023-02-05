@@ -79,11 +79,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             return newNode;
         }
 
-        // Я поняла, что надо убрать параметризацию у класса CustomLinkedList (потому что он private).
-        // Параметризация остается только класса Node.
-        // Тогда внутри CustomLinkedList мы уже будем иметь Node<Task>.
-        // Все верно?
-
         private void removeNode(Node<Task> node) {
             final Node<Task> currPrev = node.prev;
             final Node<Task> currNext = node.next;
