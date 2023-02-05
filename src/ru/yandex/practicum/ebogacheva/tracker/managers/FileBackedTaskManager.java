@@ -116,13 +116,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
     private static Task fromString(String value) {
         String[] taskInString = value.split(",");
         if (taskInString[1].equals(TaskType.TASK.name())) {
-            return new Task(Integer.parseInt(taskInString[0]), taskInString[2], taskInString[4], Status.valueOf(taskInString[3]));
+            return new Task(Integer.parseInt(taskInString[0]),
+                    taskInString[2],
+                    taskInString[4],
+                    Status.valueOf(taskInString[3]),
+                    Long.parseLong(taskInString[5]));
         }
         if (taskInString[1].equals(TaskType.EPIC.name())) {
-            return new Epic(Integer.parseInt(taskInString[0]), taskInString[2], taskInString[4], Status.valueOf(taskInString[3]), new ArrayList<>());
+            return new Epic(Integer.parseInt(taskInString[0]),
+                    taskInString[2],
+                    taskInString[4],
+                    Status.valueOf(taskInString[3]),
+                    new ArrayList<>(),
+                    Long.parseLong(taskInString[5]));
         }
         if (taskInString[1].equals(TaskType.SUBTASK.name())) {
-            return new Subtask(Integer.parseInt(taskInString[0]), taskInString[2], taskInString[4], Status.valueOf(taskInString[3]), Integer.parseInt(taskInString[5]));
+            return new Subtask(Integer.parseInt(taskInString[0]),
+                    taskInString[2],
+                    taskInString[4],
+                    Status.valueOf(taskInString[3]),
+                    Long.parseLong(taskInString[5]),
+                    Integer.parseInt(taskInString[5]));
         }
         return null;
     }

@@ -13,27 +13,27 @@ public class InMemoryTaskManagerTests {
     public static void testInMemoryTaskManager (TaskManager taskManager) {
         TestUtils.printTitle("Тест 1: Заполнение задачами");
         // Создать 2 задачи (Task)
-        Task task1 = new Task("Налоговая декларация", "Отправить декларацию до 31 декабря");
+        Task task1 = new Task("Налоговая декларация", "Отправить декларацию до 31 декабря", 60);
         taskManager.createTask(task1);
 
-        Task task2 = new Task("Чемодан", "Размер L - заказать, забрать.");
+        Task task2 = new Task("Чемодан", "Размер L - заказать, забрать.", 60);
         taskManager.createTask(task2);
 
         // Создать один эпик с 2 подзадачами, ...
-        Epic epic1 = new Epic("Новый год", "Организовать праздник");
+        Epic epic1 = new Epic("Новый год", "Организовать праздник",60);
         taskManager.createEpic(epic1);
 
-        Subtask subtask11 = new Subtask("Елка", "Купить до 30 декабря", epic1.getId());
+        Subtask subtask11 = new Subtask("Елка", "Купить до 30 декабря", 60, epic1.getId());
         taskManager.createSubtask(subtask11);
 
-        Subtask subtask12 = new Subtask("Подарки", "Купить и завернуть подарки", epic1.getId());
+        Subtask subtask12 = new Subtask("Подарки", "Купить и завернуть подарки", 60, epic1.getId());
         taskManager.createSubtask(subtask12);
 
         // а другой эпик с 1 подзадачей.
-        Epic epic2 = new Epic("Ремонт", "Обновить детскую комнату");
+        Epic epic2 = new Epic("Ремонт", "Обновить детскую комнату", 60);
         taskManager.createEpic(epic2);
 
-        Subtask subtask21 = new Subtask("Материалы", "Купить обои, клей, ламинат, краску, валики", epic2.getId());
+        Subtask subtask21 = new Subtask("Материалы", "Купить обои, клей, ламинат, краску, валики", 60, epic2.getId());
         taskManager.createSubtask(subtask21);
         TestUtils.printAllTasks(taskManager);
 
@@ -44,27 +44,27 @@ public class InMemoryTaskManagerTests {
 
         TestUtils.printTitle("Тест 3: Снова заполнили тестовые значения");
         // Создать 2 задачи (Task) - ПОСЛЕ УДАЛЕНИЯ
-        Task task3 = new Task("НАЛОГОВАЯ ДЕКЛАРАЦИЯ", "Отправить декларацию до 31 декабря");
+        Task task3 = new Task("НАЛОГОВАЯ ДЕКЛАРАЦИЯ", "Отправить декларацию до 31 декабря", 60);
         taskManager.createTask(task3);
 
-        Task task4 = new Task("ЧЕМОДАН", "Размер L - заказать, забрать.");
+        Task task4 = new Task("ЧЕМОДАН", "Размер L - заказать, забрать.",60);
         taskManager.createTask(task4);
 
         // Создать один эпик с 2 подзадачами
-        Epic epic3 = new Epic("НОВЫЙ ГОД", "Организовать праздник");
+        Epic epic3 = new Epic("НОВЫЙ ГОД", "Организовать праздник",60);
         taskManager.createEpic(epic3);
 
-        Subtask subtask31 = new Subtask("ЕЛКА", "Купить до 30 декабря", epic3.getId());
+        Subtask subtask31 = new Subtask("ЕЛКА", "Купить до 30 декабря", 60, epic3.getId());
         taskManager.createSubtask(subtask31);
 
-        Subtask subtask32 = new Subtask("ПОДАРКИ", "Купить и завернуть подарки", epic3.getId());
+        Subtask subtask32 = new Subtask("ПОДАРКИ", "Купить и завернуть подарки", 60, epic3.getId());
         taskManager.createSubtask(subtask32);
 
         // а другой эпик с 1 подзадачей.
-        Epic epic4 = new Epic("РЕМОНТ", "Обновить детскую комнату");
+        Epic epic4 = new Epic("РЕМОНТ", "Обновить детскую комнату", 60);
         taskManager.createEpic(epic4);
 
-        Subtask subtask41 = new Subtask("МАТЕРИАЛЫ", "Купить обои, клей, ламинат, краску, валики", epic4.getId());
+        Subtask subtask41 = new Subtask("МАТЕРИАЛЫ", "Купить обои, клей, ламинат, краску, валики", 60, epic4.getId());
         taskManager.createSubtask(subtask41);
 
         TestUtils.printAllTasks(taskManager);
@@ -149,10 +149,10 @@ public class InMemoryTaskManagerTests {
         TestUtils.printManagerHistory(taskManager);
 
         TestUtils.printTitle("Тест 12: Не изменение истории просмотров при добавлении тасков");
-        Task task12_1 = new Task("ПОДГУЗНИКИ", "Продать на avito лишние");
+        Task task12_1 = new Task("ПОДГУЗНИКИ", "Продать на avito лишние", 60);
         taskManager.createTask(task12_1);
 
-        Epic epic12_1 = new Epic("ИПОТЕКА", "Купить ещё одну квартиру");
+        Epic epic12_1 = new Epic("ИПОТЕКА", "Купить ещё одну квартиру", 60);
         taskManager.createEpic(epic12_1);
 
         // история не должна была измениться с прошлого раза

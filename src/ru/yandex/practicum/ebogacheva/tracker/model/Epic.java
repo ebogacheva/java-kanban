@@ -7,20 +7,30 @@ public class Epic extends Task {
 
     private List<Integer> subIds;
 
-    public Epic(String title, String description) {
-        super(title, description);
+    public Epic(String title, String description, long duration) {
+        super(title, description, duration);
         subIds = new ArrayList<>();
         this.type = TaskType.EPIC;
     }
 
-    public Epic(int id, String title, String description, Status status, List<Integer> subIds) {
-        super(id, title, description, status);
+    public Epic(int id,
+                String title,
+                String description,
+                Status status,
+                List<Integer> subIds,
+                long duration) {
+        super(id, title, description, status, duration);
         this.subIds = new ArrayList<>(subIds);
         this.type = TaskType.EPIC;
     }
 
     public Epic (Epic epic) {
-        this(epic.getId(), epic.getTitle(), epic.getDescription(), epic.getStatus(), epic.getSubIds());
+        this(epic.getId(),
+                epic.getTitle(),
+                epic.getDescription(),
+                epic.getStatus(),
+                epic.getSubIds(),
+                epic.getDuration().toMinutes());
     }
 
     public List<Integer> getSubIds() {
@@ -54,6 +64,7 @@ public class Epic extends Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + this.status +
+                ", duration=" + duration.toString() +
                 ", subTasks=" + subIds +
                 '}';
     }
@@ -65,7 +76,8 @@ public class Epic extends Task {
                 this.type.name(),
                 this.title,
                 this.status.name(),
-                this.description);
+                this.description,
+                this.duration.toString());
     }
 
 }

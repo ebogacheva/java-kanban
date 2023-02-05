@@ -17,26 +17,26 @@ public class FileBackedTaskManagerTests {
         TestUtils.printTitle("Спринт 6. Тестирование FileBackedTaskManager");
         TestUtils.printTitle("Тест 1: Заполнение задачами");
         // Создать 2 задачи (Task)
-        Task task1 = new Task("Задача 1", "Описание задачи 1");
+        Task task1 = new Task("Задача 1", "Описание задачи 1", 60);
         taskManager.createTask(task1);
-        Task task2 = new Task("Задача 2", "Описание задачи 2");
+        Task task2 = new Task("Задача 2", "Описание задачи 2",60);
         taskManager.createTask(task2);
 
         // Создать один эпик с 2 подзадачами, ...
-        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1");
+        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1",60);
         taskManager.createEpic(epic1);
 
-        Subtask subtask11 = new Subtask("Подзадача 1 Эпик 1", "Описание подзадачи 1 эпик 1", epic1.getId());
+        Subtask subtask11 = new Subtask("Подзадача 1 Эпик 1", "Описание подзадачи 1 эпик 1", 60, epic1.getId());
         taskManager.createSubtask(subtask11);
 
-        Subtask subtask12 = new Subtask("Подзадача 2 Эпик 1", "Описание подзадачи 2 эпик 1", epic1.getId());
+        Subtask subtask12 = new Subtask("Подзадача 2 Эпик 1", "Описание подзадачи 2 эпик 1", 60, epic1.getId());
         taskManager.createSubtask(subtask12);
 
         // а другой эпик с 1 подзадачей.
-        Epic epic2 = new Epic("Эпик 2", "Описание эпика 2");
+        Epic epic2 = new Epic("Эпик 2", "Описание эпика 2", 60);
         taskManager.createEpic(epic2);
 
-        Subtask subtask21 = new Subtask("Подзадача 1 Эпика 2", "Описание подзадачи 1 эпика 2", epic2.getId());
+        Subtask subtask21 = new Subtask("Подзадача 1 Эпика 2", "Описание подзадачи 1 эпика 2", 60, epic2.getId());
         taskManager.createSubtask(subtask21);
 
         System.out.println();

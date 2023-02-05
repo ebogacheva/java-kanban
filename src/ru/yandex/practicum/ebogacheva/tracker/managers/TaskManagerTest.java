@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
 import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;
 import ru.yandex.practicum.ebogacheva.tracker.model.Task;
-import ru.yandex.practicum.ebogacheva.tracker.model.TaskType;
 import ru.yandex.practicum.ebogacheva.tracker.model.TestDataProvider;
 
 import java.util.List;
@@ -118,19 +117,19 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     private Epic addEpic(int number) {
-        Epic epic = (Epic) TestDataProvider.getTaskForTesting(TaskType.EPIC, number);
+        Epic epic = (Epic) TestDataProvider.getEpicForTesting(number);
         taskManager.createEpic(epic);
         return epic;
     }
 
     private Subtask addSubtask(int number, int id) {
-        Subtask subtask = (Subtask) TestDataProvider.getTaskForTesting(TaskType.SUBTASK, number, id);
+        Subtask subtask = (Subtask) TestDataProvider.getSubtaskForTesting(number, id);
         taskManager.createSubtask(subtask);
         return subtask;
     }
 
     private Task addTask(int number) {
-        Task task = TestDataProvider.getTaskForTesting(TaskType.TASK, number);
+        Task task = TestDataProvider.getTaskForTesting(number);
         taskManager.createTask(task);
         return task;
     }

@@ -16,23 +16,23 @@ public class InMemoryHistoryManagerTests {
                 "Запросить несколько раз. Вывести историю и убедиться, что в ней нет повторов.");
 
         // Создали задачи, подзадачи, эпики:
-        Task task1 = new Task("Задача 1", "Описание задачи 1");
-        Task task2 = new Task("Задача 2", "Описание задачи 2");
+        Task task1 = new Task("Задача 1", "Описание задачи 1", 60);
+        Task task2 = new Task("Задача 2", "Описание задачи 2", 60);
         taskManager.createTask(task1);
         TestUtils.printLine("Создана Задача 1");
         taskManager.createTask(task2);
         TestUtils.printLine("Создана Задача 2");
 
-        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1");
-        Epic epic2 = new Epic("Эпик 2", "Описание эпика 2");
+        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1",60);
+        Epic epic2 = new Epic("Эпик 2", "Описание эпика 2",60);
         taskManager.createEpic(epic1);
         TestUtils.printLine("Создан Эпик 1");
         taskManager.createEpic(epic2);
         TestUtils.printLine("Создан Эпик 2");
 
-        Subtask subtask11 = new Subtask("Подзадача 1 Эпик 1", "Описание подзадачи 1", epic1.getId());
-        Subtask subtask12 = new Subtask("Подзадача 2 Эпик 1", "Описание подзадачи 1", epic1.getId());
-        Subtask subtask13 = new Subtask("Подзадача 3 Эпик 1", "Описание подзадачи 1", epic1.getId());
+        Subtask subtask11 = new Subtask("Подзадача 1 Эпик 1", "Описание подзадачи 1", 60, epic1.getId());
+        Subtask subtask12 = new Subtask("Подзадача 2 Эпик 1", "Описание подзадачи 1", 60, epic1.getId());
+        Subtask subtask13 = new Subtask("Подзадача 3 Эпик 1", "Описание подзадачи 1", 60, epic1.getId());
         taskManager.createSubtask(subtask11);
         TestUtils.printLine("Создана Подзадача 1 Эпик 1");
         taskManager.createSubtask(subtask12);
@@ -88,23 +88,23 @@ public class InMemoryHistoryManagerTests {
         taskManager.deleteAllTasks();
         taskManager.deleteAllEpics();
         // Снова создали задачи, подзадачи, эпики:
-        Task task3 = new Task("Задача 3", "Описание задачи 3");
-        Task task4 = new Task("Задача 4", "Описание задачи 4");
+        Task task3 = new Task("Задача 3", "Описание задачи 3", 60);
+        Task task4 = new Task("Задача 4", "Описание задачи 4", 60);
         taskManager.createTask(task3);
         TestUtils.printLine("Создана Задача 3");
         taskManager.createTask(task4);
         TestUtils.printLine("Создана Задача 4");
 
-        Epic epic3 = new Epic("Эпик 3", "Описание эпика 3");
-        Epic epic4 = new Epic("Эпик 4", "Описание эпика 4");
+        Epic epic3 = new Epic("Эпик 3", "Описание эпика 3",60);
+        Epic epic4 = new Epic("Эпик 4", "Описание эпика 4",60);
         taskManager.createEpic(epic3);
         TestUtils.printLine("Создан Эпик 3");
         taskManager.createEpic(epic4);
         TestUtils.printLine("Создан Эпик 4");
 
-        Subtask subtask31 = new Subtask("Подзадача 1 Эпик 3", "Описание подзадачи 1", epic3.getId());
-        Subtask subtask32 = new Subtask("Подзадача 2 Эпик 3", "Описание подзадачи 1", epic3.getId());
-        Subtask subtask33 = new Subtask("Подзадача 3 Эпик 3", "Описание подзадачи 1", epic3.getId());
+        Subtask subtask31 = new Subtask("Подзадача 1 Эпик 3", "Описание подзадачи 1", 60, epic3.getId());
+        Subtask subtask32 = new Subtask("Подзадача 2 Эпик 3", "Описание подзадачи 1", 60, epic3.getId());
+        Subtask subtask33 = new Subtask("Подзадача 3 Эпик 3", "Описание подзадачи 1", 60, epic3.getId());
         taskManager.createSubtask(subtask31);
         TestUtils.printLine("Создана Подзадача 1 Эпик 3");
         taskManager.createSubtask(subtask32);

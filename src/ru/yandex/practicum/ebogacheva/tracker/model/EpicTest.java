@@ -121,13 +121,13 @@ class EpicTest {
 
 
     private Epic addEpic(int number) {
-        Epic epic = (Epic) TestDataProvider.getTaskForTesting(TaskType.EPIC, number);
+        Epic epic = TestDataProvider.getEpicForTesting(number);
         taskManager.createEpic(epic);
         return epic;
     }
 
     private Subtask addSubtask(int number, int id) {
-        Subtask subtask = (Subtask) TestDataProvider.getTaskForTesting(TaskType.SUBTASK, number, id);
+        Subtask subtask = (Subtask) TestDataProvider.getSubtaskForTesting(number, id);
         taskManager.createSubtask(subtask);
         return subtask;
     }

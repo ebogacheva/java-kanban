@@ -4,20 +4,25 @@ public class Subtask extends Task {
 
     protected int epicId;
 
-    public Subtask(String title, String description, int epicId) {
-        super(title, description);
+    public Subtask(String title, String description, long duration, int epicId) {
+        super(title, description, duration);
         this.epicId = epicId;
         this.type = TaskType.SUBTASK;
     }
 
-    public Subtask(int id, String title, String description, Status status, int epicId) {
-        super(id, title, description, status);
+    public Subtask(int id, String title, String description, Status status, long duration, int epicId) {
+        super(id, title, description, status, duration);
         this.epicId = epicId;
         this.type = TaskType.SUBTASK;
     }
 
     public Subtask(Subtask subtask) {
-        this(subtask.getId(), subtask.getTitle(), subtask.getDescription(), subtask.getStatus(), subtask.getEpicId());
+        this(subtask.getId(),
+                subtask.getTitle(),
+                subtask.getDescription(),
+                subtask.getStatus(),
+                subtask.getDuration().toMinutes(),
+                subtask.getEpicId());
     }
 
     public int getEpicId() {
@@ -43,6 +48,7 @@ public class Subtask extends Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", duration=" + duration.toString() +
                 ", epicID=" + epicId +
                 '}';
     }
@@ -55,6 +61,7 @@ public class Subtask extends Task {
                 this.title,
                 this.status.name(),
                 this.description,
+                this.duration.toString(),
                 String.valueOf(this.epicId));
     }
 }
