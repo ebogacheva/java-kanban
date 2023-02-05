@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
-import java.util.Optional;
 
 public class Task {
 
@@ -15,9 +14,7 @@ public class Task {
     protected Status status;
     protected TaskType type = TaskType.TASK;
     protected Duration duration;
-
-    protected LocalDateTime startTime;
-    protected LocalDateTime endTime;
+    protected LocalDateTime startDateTime;
 
 
     public Task(String title, String description) {
@@ -26,8 +23,7 @@ public class Task {
         this.description = description;
         this.status = Status.NEW;
         this.duration = Duration.ZERO;
-        this.startTime = null;
-        this.endTime = null;
+        this.startDateTime= null;
     }
 
     public Task(String title, String description, long duration) {
@@ -36,8 +32,7 @@ public class Task {
         this.description = description;
         this.status = Status.NEW;
         this.duration = Duration.ofMinutes(duration);
-        this.startTime = null;
-        this.endTime = null;
+        this.startDateTime= null;
     }
 
     public Task(String title, String description, long duration, String startDateTime) {
@@ -46,8 +41,7 @@ public class Task {
         this.description = description;
         this.status = Status.NEW;
         this.duration = Duration.ofMinutes(duration);
-        this.startTime = getStartDateTimeFormatted(startDateTime);
-        this.endTime = getEndDateTimeFormatted();
+        this.startDateTime= getStartDateTimeFormatted(startDateTime);
     }
 
     private LocalDateTime getStartDateTimeFormatted(String input) {
@@ -62,8 +56,8 @@ public class Task {
 
     private LocalDateTime getEndDateTimeFormatted() {
         LocalDateTime output = null;
-        if (this.startTime != null) {
-           output = this.startTime.plusMinutes(this.duration.toMinutes());
+        if (this.startDateTime != null) {
+           output = this.startDateTime.plusMinutes(this.duration.toMinutes());
         }
         return output;
     }
@@ -73,15 +67,13 @@ public class Task {
                 String description,
                 Status status,
                 long duration,
-                LocalDateTime startTime,
-                LocalDateTime endTime) {
+                LocalDateTime startTime) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
         this.duration = Duration.ofMinutes(duration);
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDateTime= startTime;
     }
 
     public Task(Task task) {
@@ -90,8 +82,7 @@ public class Task {
                 task.getDescription(),
                 task.getStatus(),
                 task.getDuration().toMinutes(),
-                task.getStartTime(),
-                task.getEndTime());
+                task.getStartDateTime());
     }
 
     public Status getStatus() {
@@ -126,19 +117,15 @@ public class Task {
 
     public void setDuration(Duration duration) {this.duration = duration;}
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
     }
 
     public LocalDateTime getEndTime() {
-        return endTime;
+        return getEndDateTimeFormatted();
     }
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime=startTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime=endTime;
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
     }
 
     @Override
@@ -156,20 +143,19 @@ public class Task {
 
     @Override
     public String toString() {
-        String[] time = getStartEndTime();
+        String time = getStartEndTime();
         return "Task{" +
                 "ID=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", duration=" + duration.toString() +
-                ", start=" + time[0] +
-                ", end=" + time[1] +
+                ", start=" + time +
                 '}';
     }
 
     public String toFileString() {
-        String[] time = getStartEndTime();
+        String time = getStartEndTime();
         return String.join(",",
                 String.valueOf(this.id),
                 this.type.name(),
@@ -177,18 +163,15 @@ public class Task {
                 this.status.name(),
                 this.description,
                 this.duration.toString(),
-                time[0],
-                time[1]);
+                time);
     }
 
-    protected String[] getStartEndTime() {
-        String[] time = new String[2];
-        if (startTime == null) {
-            time[0] = "null";
-            time[1] = "null";
+    protected String getStartEndTime() {
+        String time;
+        if (startDateTime == null) {
+            time = "null";
         } else {
-            time[0] = startTime.toString();
-            time[1] = endTime.toString();
+            time = startDateTime.toString();
         }
         return time;
     }

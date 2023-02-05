@@ -1,6 +1,5 @@
 package ru.yandex.practicum.ebogacheva.tracker.model;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Subtask extends Task {
@@ -31,9 +30,8 @@ public class Subtask extends Task {
                    Status status,
                    long duration,
                    LocalDateTime startDateTime,
-                   LocalDateTime endDateTime,
                    int epicId) {
-        super(id, title, description, status, duration, startDateTime, endDateTime);
+        super(id, title, description, status, duration, startDateTime);
         this.epicId = epicId;
     }
 
@@ -43,8 +41,7 @@ public class Subtask extends Task {
                 subtask.getDescription(),
                 subtask.getStatus(),
                 subtask.getDuration().toMinutes(),
-                subtask.getStartTime(),
-                subtask.getEndTime(),
+                subtask.getStartDateTime(),
                 subtask.getEpicId());
     }
 

@@ -125,8 +125,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
                     taskInString[4], // description
                     Status.valueOf(taskInString[3]), // status
                     Duration.parse(taskInString[5]).toMinutes(),
-                    getTaskDateTimeFromString(taskInString[6]),
-                    getTaskDateTimeFromString(taskInString[7]));
+                    getTaskDateTimeFromString(taskInString[6]));
         }
         if (taskInString[1].equals(TaskType.EPIC.name())) {
             return new Epic(Integer.parseInt(taskInString[0]),
@@ -135,7 +134,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
                     Status.valueOf(taskInString[3]),
                     Duration.parse(taskInString[5]).toMinutes(),
                     getTaskDateTimeFromString(taskInString[6]),
-                    getTaskDateTimeFromString(taskInString[7]),
                     new ArrayList<>());
         }
         if (taskInString[1].equals(TaskType.SUBTASK.name())) {
@@ -145,7 +143,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
                     Status.valueOf(taskInString[3]),
                     Duration.parse(taskInString[5]).toMinutes(),
                     getTaskDateTimeFromString(taskInString[6]),
-                    getTaskDateTimeFromString(taskInString[7]),
                     Integer.parseInt(taskInString[8]));
         }
         return null;

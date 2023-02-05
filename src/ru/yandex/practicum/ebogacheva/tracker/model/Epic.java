@@ -1,6 +1,5 @@
 package ru.yandex.practicum.ebogacheva.tracker.model;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,18 +12,12 @@ public class Epic extends Task {
         super(title, description);
         subIds = new ArrayList<>();
         this.type = TaskType.EPIC;
-        this.duration = Duration.ZERO;
-        this.startTime = null;
-        this.endTime = null;
     }
 
     public Epic(String title, String description, long duration) {
         super(title, description, duration);
         subIds = new ArrayList<>();
         this.type = TaskType.EPIC;
-        this.duration = Duration.ofMinutes(duration);
-        this.startTime = null;
-        this.endTime = null;
     }
 
     public Epic(int id,
@@ -32,10 +25,9 @@ public class Epic extends Task {
                    String description,
                    Status status,
                    long duration,
-                   LocalDateTime startDate,
-                   LocalDateTime endDate,
+                   LocalDateTime startDateTime,
                    List<Integer> subIds) {
-        super(id, title, description, status, duration, startDate, endDate);
+        super(id, title, description, status, duration, startDateTime);
         this.subIds = new ArrayList<>(subIds);
         this.type = TaskType.EPIC;
     }
@@ -46,8 +38,7 @@ public class Epic extends Task {
                 epic.getDescription(),
                 epic.getStatus(),
                 epic.getDuration().toMinutes(),
-                epic.getStartTime(),
-                epic.getEndTime(),
+                epic.getStartDateTime(),
                 epic.getSubIds());
     }
 
