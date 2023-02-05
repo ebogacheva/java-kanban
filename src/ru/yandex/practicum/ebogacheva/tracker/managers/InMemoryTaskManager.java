@@ -21,7 +21,6 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Epic> epics;
     protected final HistoryManager historyManager;
     protected static final AtomicInteger idProvider = new AtomicInteger(0);
-    private enum EditEpicDuration {MINUS_MINUTES, PLUS_MINUTES};
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -203,9 +202,10 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Subtask> getEpicSubtasks(Epic epic) {
         List<Subtask> epicSubs = new ArrayList<>();
         for (Integer id : epic.getSubIds()) {
-            Subtask subtask = subtasks.get(id);
-            epicSubs.add(subtask);
-            historyManager.add(subtask);
+            Subtask subtaskInside = subtasks.get(id);
+            Subtask subtaskOutput = new Subtask(subtaskInside);
+            epicSubs.add(subtaskOutput);
+            historyManager.add(subtaskInside);
         }
         return epicSubs;
     }

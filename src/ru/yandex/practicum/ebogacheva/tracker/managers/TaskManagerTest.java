@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 abstract class TaskManagerTest<T extends TaskManager> {
 
-    TaskManager taskManager;
+    T taskManager;
 
     @Test
     void createTask() {
