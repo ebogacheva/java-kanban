@@ -1,5 +1,0 @@
-14,EPIC,Test addNewEpic #1,IN_PROGRESS,Test addNewEpic #1 description,PT2H,null,[15, 16]
-15,SUBTASK,Test addNewSubtask #1,DONE,Test addNewSubtask #1 description,PT1H,null,14
-16,TASK,Test addNewSubtask #2,NEW,Test addNewSubtask #2 description,PT1H,null,14
-
-14

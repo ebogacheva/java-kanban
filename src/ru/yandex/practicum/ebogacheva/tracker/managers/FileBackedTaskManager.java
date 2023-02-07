@@ -1,7 +1,6 @@
 package ru.yandex.practicum.ebogacheva.tracker.managers;
 
 import ru.yandex.practicum.ebogacheva.tracker.exceptions.ManagerSaveException;
-import ru.yandex.practicum.ebogacheva.tracker.history.HistoryManager;
 import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
 import ru.yandex.practicum.ebogacheva.tracker.model.Status;
 import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;
@@ -43,7 +42,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
                 fileWriter.write(task.toFileString() + "\n");
             }
             fileWriter.write("\n");
-            fileWriter.write(historyToString(this.historyManager));
+            fileWriter.write(historyToString(this.historyManager.getHistory()));
+        } catch (IOException e) {
+            throw new ManagerSaveException();
+        }
+    }
+
+    public void save(File file) throws ManagerSaveException {
+        try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
+            List<Task> saveToFile = new ArrayList<>(this.tasks.values());
+            saveToFile.addAll(this.epics.values());
+            saveToFile.addAll(this.subtasks.values());
+            saveToFile.sort(Comparator.comparingInt(Task::getId));
+            for (Task task : saveToFile) {
+                fileWriter.write(task.toFileString() + "\n");
+            }
+            fileWriter.write("\n");
+            fileWriter.write(historyToString(this.historyManager.getHistory()));
         } catch (IOException e) {
             throw new ManagerSaveException();
         }
@@ -82,11 +97,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
             }
             if (task.getType().equals(TaskType.TASK)) {
                 taskManager.tasks.put(task.getId(), task);
+                taskManager.sortedTasks.add(task);
             } else if (task.getType().equals(TaskType.EPIC)) {
                 taskManager.epics.put(task.getId(), (Epic) task);
             } else if (task.getType().equals(TaskType.SUBTASK)) {
                 Subtask subtask = (Subtask) task;
                 taskManager.subtasks.put(task.getId(), subtask);
+                taskManager.sortedTasks.add(subtask);
                 int epicId = subtask.getEpicId();
                 Epic epic = taskManager.epics.get(epicId);
                 List<Integer> subIds = epic.getSubIds();
@@ -96,11 +113,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
         return taskManager;
     }
 
-
-    private static String historyToString(HistoryManager historyManager) {
+    public static String historyToString(List<Task> history) {
         StringBuilder historySb = new StringBuilder();
-        if (!historyManager.getHistory().isEmpty()) {
-            for (Task task : historyManager.getHistory()) {
+        if (!history.isEmpty()) {
+            for (Task task : history) {
                 historySb.append(task.getId()).append(",");
             }
             historySb.deleteCharAt(historySb.length() - 1);
@@ -108,22 +124,28 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
         return historySb.toString();
     }
 
-    private static List<Integer> historyFromString(String value) {
+    public static List<Integer> historyFromString(String value) {
         String[] historyInString = value.split(",");
         List<Integer> history =  new ArrayList<>();
         for (String taskId : historyInString) {
-            history.add(Integer.parseInt(taskId));
+            try {
+                history.add(Integer.parseInt(taskId));
+            } catch (NumberFormatException ignored) {
+            }
         }
         return history;
     }
 
-    private static Task fromString(String value) {
+   private static Task fromString(String value) {
         String[] taskInString = value.split(",");
+        if (taskInString.length < 7) {
+            return null;
+        }
         if (taskInString[1].equals(TaskType.TASK.name())) {
-            return new Task(Integer.parseInt(taskInString[0]), // id
-                    taskInString[2], // title
-                    taskInString[4], // description
-                    Status.valueOf(taskInString[3]), // status
+            return new Task(Integer.parseInt(taskInString[0]),
+                    taskInString[2],
+                    taskInString[4],
+                    Status.valueOf(taskInString[3]),
                     Duration.parse(taskInString[5]).toMinutes(),
                     getTaskDateTimeFromString(taskInString[6]));
         }
@@ -143,12 +165,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
                     Status.valueOf(taskInString[3]),
                     Duration.parse(taskInString[5]).toMinutes(),
                     getTaskDateTimeFromString(taskInString[6]),
-                    Integer.parseInt(taskInString[8]));
+                    Integer.parseInt(taskInString[7]));
         }
         return null;
     }
 
-    private static LocalDateTime getTaskDateTimeFromString(String input) {
+    public static LocalDateTime getTaskDateTimeFromString(String input) {
         DateTimeFormatter formatterDateTime = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         LocalDateTime outputDateTime = null;
         try {
@@ -157,7 +179,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
         }
         return outputDateTime;
     }
-
 
     @Override
     public List<Task> getTasks() {
