@@ -33,19 +33,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
     }
 
     private void save() throws ManagerSaveException {
-        try (FileWriter fileWriter = new FileWriter(this.fileName, StandardCharsets.UTF_8)) {
-            List<Task> saveToFile = new ArrayList<>(this.tasks.values());
-            saveToFile.addAll(this.epics.values());
-            saveToFile.addAll(this.subtasks.values());
-            saveToFile.sort(Comparator.comparingInt(Task::getId));
-            for (Task task : saveToFile) {
-                fileWriter.write(task.toFileString() + "\n");
-            }
-            fileWriter.write("\n");
-            fileWriter.write(historyToString(this.historyManager.getHistory()));
-        } catch (IOException e) {
-            throw new ManagerSaveException();
-        }
+        save(new File(this.fileName));
     }
 
     public void save(File file) throws ManagerSaveException {

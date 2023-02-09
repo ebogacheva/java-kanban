@@ -1,5 +1,7 @@
 package ru.yandex.practicum.ebogacheva.tracker.test;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.yandex.practicum.ebogacheva.tracker.exceptions.ManagerSaveException;
 import ru.yandex.practicum.ebogacheva.tracker.managers.FileBackedTaskManager;
 import ru.yandex.practicum.ebogacheva.tracker.managers.TaskManager;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestObjectsProvider {
 
     public static Subtask getSubtaskForTesting(int number, int epicId) {

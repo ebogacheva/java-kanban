@@ -57,7 +57,7 @@ public class Task {
     private LocalDateTime getEndDateTimeFormatted() {
         LocalDateTime output = null;
         if (this.startDateTime != null) {
-           output = this.startDateTime.plusMinutes(this.duration.toMinutes());
+            output = this.startDateTime.plusMinutes(this.duration.toMinutes());
         }
         return output;
     }

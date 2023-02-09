@@ -12,9 +12,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-abstract class TaskManagerTest<T extends TaskManager> {
+abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
 
-    T taskManager;
+    TaskManagerType taskManager;
 
     @Test
     void createTaskRegularCase() {
@@ -64,7 +64,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void createSubtaskWithInvalidEpicId() {
-        final Epic epic = TestObjectsProvider.addEpic(1, taskManager);
         final Subtask subtask = TestObjectsProvider.getSubtaskForTesting(1, 11111);
         assertThrows(NullPointerException.class, () -> taskManager.createSubtask(subtask));
     }
@@ -311,6 +310,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(taskManager.getEpic(epic1.getId()).getStatus(), Status.DONE);
     }
 
+    // Тут subtask1 используется:
+    // Я создаю новый эпик, создаю subtask1 в этом эпике.
+    // Потом удаляю все подзадачи у эпика и обновляю эпик в менеджере.
+    // После этого проверяю, что эпик в менеджере изменился = считаю подзадачи эпика до и после удаления всех подзадач.
     @Test
     void updateEpic() {
         final Epic epic1 = TestObjectsProvider.addEpic(1, taskManager);
@@ -419,8 +422,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getHistoryEmpty() {
-        final Task task1 = TestObjectsProvider.addTask(1, taskManager);
-        final Task task2 = TestObjectsProvider.addTask(2, taskManager);
         final Epic epic1 = TestObjectsProvider.addEpic(1, taskManager);
         TestObjectsProvider.addSubtask(1, epic1.getId(), taskManager);
         assertEquals(0, taskManager.getHistory().size());

@@ -17,25 +17,26 @@ public class Epic extends Task {
     }
 
     public Epic(int id,
-                   String title,
-                   String description,
-                   Status status,
-                   long duration,
-                   LocalDateTime startDateTime,
-                   List<Integer> subIds) {
+                String title,
+                String description,
+                Status status,
+                long duration,
+                LocalDateTime startDateTime,
+                List<Integer> subIds) {
         super(id, title, description, status, duration, startDateTime);
         this.subIds = new ArrayList<>(subIds);
         this.type = TaskType.EPIC;
     }
-
-    public Epic (Epic epic) {
+    // Несколько раз переделала reformat code: среда форматирует так, как у меня было
+    // Вручную сделала так (по 4 пробела). Правильно?
+    public Epic(Epic epic) {
         this(epic.getId(),
-                epic.getTitle(),
-                epic.getDescription(),
-                epic.getStatus(),
-                epic.getDuration().toMinutes(),
-                epic.getStartDateTime(),
-                epic.getSubIds());
+            epic.getTitle(),
+            epic.getDescription(),
+            epic.getStatus(),
+            epic.getDuration().toMinutes(),
+            epic.getStartDateTime(),
+            epic.getSubIds());
     }
 
     public List<Integer> getSubIds() {
