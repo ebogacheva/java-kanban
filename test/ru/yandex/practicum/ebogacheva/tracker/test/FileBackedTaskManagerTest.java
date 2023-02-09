@@ -17,7 +17,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest extends TaskManagerTest<TaskManager> {
@@ -97,13 +100,19 @@ class FileBackedTaskManagerTest extends TaskManagerTest<TaskManager> {
     void getTasksBackedInFile() {
         List<Task> expected = TestObjectsProvider.addThreeTasksToManager(taskManager);
         taskManager.getTasks();
-        List<Task> historyFromManager = taskManager.getHistory();
+        List<Task> historyFromManager = taskManager
+                .getHistory()
+                .stream()
+                .sorted(Comparator.comparingInt(Task::getId))
+                .collect(Collectors.toList());
         assertEquals(expected, historyFromManager);
         FileBackedTaskManager taskManagerNEW = TestObjectsProvider.getFileBackedManager();
-        List<Task> historyFromFile = taskManagerNEW.getHistory();
-        for (Task task : expected) {
-            assertTrue(historyFromFile.contains(task));
-        }
+        List<Task> historyFromFile = taskManagerNEW
+                .getHistory()
+                .stream()
+                .sorted(Comparator.comparingInt(Task::getId))
+                .collect(Collectors.toList());
+        assertEquals(expected, historyFromManager);
     }
 
     @Test
