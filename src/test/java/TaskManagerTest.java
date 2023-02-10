@@ -1,5 +1,3 @@
-package ru.yandex.practicum.ebogacheva.tracker.test;
-
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.ebogacheva.tracker.managers.TaskManager;
 import ru.yandex.practicum.ebogacheva.tracker.model.Epic;

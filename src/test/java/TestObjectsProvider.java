@@ -1,5 +1,3 @@
-package ru.yandex.practicum.ebogacheva.tracker.test;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.yandex.practicum.ebogacheva.tracker.exceptions.ManagerSaveException;
