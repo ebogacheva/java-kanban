@@ -22,16 +22,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 public class FileBackedTaskManager extends InMemoryTaskManager{
 
-    private final String fileName;
+    private String fileName;
 
     public FileBackedTaskManager(String fileName) {
         super();
         this.fileName = fileName;
     }
 
-    private void save() throws ManagerSaveException {
+    public void save() throws ManagerSaveException {
         save(new File(this.fileName));
     }
 

@@ -35,7 +35,7 @@ public class KVTaskClient {
         this.API_TOKEN = response.body();
     }
 
-    public void put(String key, String json) throws IOException, InterruptedException {
+    public void put(String key, String json) {
         URI uri = URI.create(this.serverURL + "/save/" + key + "?API_TOKEN=" + this.API_TOKEN);
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(uri)
@@ -43,10 +43,13 @@ public class KVTaskClient {
                 .header("Content-Type", "application/json")
                 .version(HttpClient.Version.HTTP_1_1)
                 .build();
-        HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8);
-        HttpResponse<String> response = httpClient.send(httpRequest, handler);
-        if (response.statusCode() != ResponseCode.OK_200.getCode()) {
-            System.out.println("Не удалось сохранить данные, ошибка :" + response.statusCode());
+        try {
+            HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8);
+            HttpResponse<String> response = httpClient.send(httpRequest, handler);
+            if (response.statusCode() != ResponseCode.OK_200.getCode()) {
+                System.out.println("Не удалось сохранить данные, ошибка :" + response.statusCode());
+            }
+        } catch (IOException | InterruptedException ignored) {
         }
     }
 
