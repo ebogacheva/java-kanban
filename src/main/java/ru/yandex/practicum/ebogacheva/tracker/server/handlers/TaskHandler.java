@@ -27,12 +27,12 @@ public class TaskHandler implements HttpHandler {
 
     public TaskHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
-        this.gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .serializeNulls()
-                .create();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setPrettyPrinting();
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+        gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
+        gsonBuilder.serializeNulls();
+        this.gson = gsonBuilder.create();
     }
 
     @Override
@@ -126,7 +126,6 @@ public class TaskHandler implements HttpHandler {
 
     private ResponseData post(String body) {
         int code;
-        ResponseData responseData;
         if (body == null) {
             code = ResponseCode.BAD_REQUEST_400.getCode();
             return new ResponseData(code, null);

@@ -23,12 +23,12 @@ public class HistoryHandler implements HttpHandler {
 
     public HistoryHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
-        this.gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .serializeNulls()
-                .create();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setPrettyPrinting();
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+        gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
+        gsonBuilder.serializeNulls();
+        this.gson = gsonBuilder.create();
     }
 
     @Override
