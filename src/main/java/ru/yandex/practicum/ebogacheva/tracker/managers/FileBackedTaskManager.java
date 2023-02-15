@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -159,10 +158,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
     }
 
     public static LocalDateTime getTaskDateTimeFromString(String input) {
-        DateTimeFormatter formatterDateTime = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         LocalDateTime outputDateTime = null;
         try {
-            outputDateTime = LocalDateTime.parse(input, formatterDateTime);
+            outputDateTime = LocalDateTime.parse(input);
         } catch (DateTimeParseException ignored) {
         }
         return outputDateTime;
