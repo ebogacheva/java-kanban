@@ -27,8 +27,7 @@ public class EpicHandler implements HttpHandler {
     public EpicHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setPrettyPrinting();
-        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+        gsonBuilder.setPrettyPrinting().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
         gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
         gsonBuilder.serializeNulls();
         this.gson = gsonBuilder.create();

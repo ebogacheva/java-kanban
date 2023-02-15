@@ -20,22 +20,19 @@ public class HttpTaskManager extends FileBackedTaskManager{
 
     private final KVTaskClient kvTaskClient;
     private final String kvServerURL;
-    private final Gson gson;
+    private final Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationAdapter())
+            .serializeNulls()
+            .create();
 
 
     public HttpTaskManager(String kvServerURL) throws IOException, InterruptedException {
         super(kvServerURL);
-        try {
-            loadFromKey();
-        } catch (Exception ignored) {}
         this.kvServerURL = kvServerURL;
         this.kvTaskClient = new KVTaskClient(this.kvServerURL);
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setPrettyPrinting();
-        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
-        gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
-        gsonBuilder.serializeNulls();
-        this.gson = gsonBuilder.create();
+        loadFromKey();
     }
 
     public void loadFromKey() throws IOException, InterruptedException {
@@ -68,7 +65,7 @@ public class HttpTaskManager extends FileBackedTaskManager{
 
         JsonElement jsonSortedTasks = new JsonParser().parse(kvTaskClient.load("sortedTasks"));
         if (!jsonSubtasks.isJsonNull()) {
-            JsonArray jsonSortedTasksArray = jsonSubtasks.getAsJsonArray();
+            JsonArray jsonSortedTasksArray = jsonSortedTasks.getAsJsonArray();
             for (JsonElement jsonSortedTask : jsonSortedTasksArray) {
                 Task task = gson.fromJson(jsonSortedTask, Task.class);
                 this.sortedTasks.add(task);

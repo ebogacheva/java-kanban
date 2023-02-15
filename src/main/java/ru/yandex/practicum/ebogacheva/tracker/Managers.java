@@ -21,7 +21,7 @@ public class Managers {
     }
 
     public static HttpTaskManager getHttpTaskManager(String kvServerURL) throws IOException, InterruptedException {
-        return new HttpTaskManager("http://localhost:" + KVServer.PORT);
+        return new HttpTaskManager(kvServerURL);
     }
 
 }

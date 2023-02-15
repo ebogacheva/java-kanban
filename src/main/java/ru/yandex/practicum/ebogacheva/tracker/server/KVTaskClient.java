@@ -11,11 +11,9 @@ public class KVTaskClient {
 
     private String API_TOKEN;
     private final String serverURL;
-    private final HttpClient httpClient;
 
     public KVTaskClient(String serverURL) throws IOException, InterruptedException {
         this.serverURL = serverURL;
-        this.httpClient = HttpClient.newHttpClient();
         register();
     }
 
@@ -28,6 +26,7 @@ public class KVTaskClient {
                 .version(HttpClient.Version.HTTP_1_1)
                 .build();
         HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+        HttpClient httpClient = HttpClient.newHttpClient();
         HttpResponse<String> response = httpClient.send(request, handler);
         if (response.statusCode() != ResponseCode.OK_200.getCode()) {
             System.out.println("Не удалось зарегистрироваться и получить код доступа, ошибка :" + response.statusCode());
@@ -45,6 +44,7 @@ public class KVTaskClient {
                 .build();
         try {
             HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8);
+            HttpClient httpClient = HttpClient.newHttpClient();
             HttpResponse<String> response = httpClient.send(httpRequest, handler);
             if (response.statusCode() != ResponseCode.OK_200.getCode()) {
                 System.out.println("Не удалось сохранить данные, ошибка :" + response.statusCode());
@@ -62,6 +62,7 @@ public class KVTaskClient {
                 .version(HttpClient.Version.HTTP_1_1)
                 .build();
         HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+        HttpClient httpClient = HttpClient.newHttpClient();
         HttpResponse<String> response = httpClient.send(request, handler);
         if (response.statusCode() != ResponseCode.OK_200.getCode()) {
             System.out.println("Не удалось получить данные, оОшибка :" + response.statusCode());
