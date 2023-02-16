@@ -27,12 +27,12 @@ public class TaskHandler implements HttpHandler {
 
     public TaskHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setPrettyPrinting();
-        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
-        gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
-        gsonBuilder.serializeNulls();
-        this.gson = gsonBuilder.create();
+        gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .registerTypeAdapter(Duration.class, new DurationAdapter())
+                .serializeNulls()
+                .create();
     }
 
     @Override
@@ -130,19 +130,27 @@ public class TaskHandler implements HttpHandler {
             code = ResponseCode.BAD_REQUEST_400.getCode();
             return new ResponseData(code, null);
         }
-        Task task = gson.fromJson(body, Task.class);
+
+        Task task = null;
+        try {
+            task = gson.fromJson(body, Task.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (task == null) {
             code = ResponseCode.BAD_REQUEST_400.getCode();
-        } else {
-            int id = task.getId();
-            if (taskManager.getTask(id) != null) {
-                taskManager.updateTask(task);
-            } else {
-                taskManager.createTask(task);
-            }
-            code = ResponseCode.CREATED_201.getCode();
+            return new ResponseData(code, null);
         }
-        return new ResponseData(code, null);
+        int id = task.getId();
+        if (taskManager.getTask(id) != null) {
+            taskManager.updateTask(task);
+        } else {
+            taskManager.createTask(task);
+        }
+        code = ResponseCode.CREATED_201.getCode();
+        String response = gson.toJson(task);
+        return new ResponseData(code, response);
     }
 
     private ResponseData delete(String pathId) {

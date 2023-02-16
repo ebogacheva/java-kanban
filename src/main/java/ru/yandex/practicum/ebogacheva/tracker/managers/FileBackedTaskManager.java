@@ -25,15 +25,15 @@ import java.util.stream.Stream;
 
 public class FileBackedTaskManager extends InMemoryTaskManager{
 
-    private String fileName;
+    protected String resource;
 
     public FileBackedTaskManager(String fileName) {
         super();
-        this.fileName = fileName;
+        this.resource = fileName;
     }
 
     public void save() throws ManagerSaveException {
-        save(new File(this.fileName));
+        save(new File(this.resource));
     }
 
     public void save(File file) throws ManagerSaveException {

@@ -17,57 +17,73 @@ public class KVTaskClient {
         register();
     }
 
-    private void register() throws IOException, InterruptedException {
-        URI uri = URI.create(this.serverURL + "/register");
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .GET()
-                .header("Content-Type", "application/json")
-                .version(HttpClient.Version.HTTP_1_1)
-                .build();
-        HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpResponse<String> response = httpClient.send(request, handler);
-        if (response.statusCode() != ResponseCode.OK_200.getCode()) {
-            System.out.println("Не удалось зарегистрироваться и получить код доступа, ошибка :" + response.statusCode());
+    private void register() {
+        try {
+            URI uri = URI.create(this.serverURL + "/register");
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .GET()
+                    .header("Content-Type", "application/json")
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .build();
+            HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+            HttpClient httpClient = HttpClient.newHttpClient();
+            HttpResponse<String> response = httpClient.send(request, handler);
+            if (response.statusCode() != ResponseCode.OK_200.getCode()) {
+                System.out.println("Не удалось зарегистрироваться и получить код доступа, ошибка :" + response.statusCode());
+            }
+            this.API_TOKEN = response.body();
+        } catch (IllegalArgumentException ex){
+            System.out.println("Неверный формат URL. Повторите попытку.");
+        } catch (IOException | InterruptedException ex) {
+            System.out.println("Ошибка соединения. Повторите попытку.");
         }
-        this.API_TOKEN = response.body();
     }
 
     public void put(String key, String json) {
-        URI uri = URI.create(this.serverURL + "/save/" + key + "?API_TOKEN=" + this.API_TOKEN);
-        HttpRequest httpRequest = HttpRequest.newBuilder()
+        try {
+            URI uri = URI.create(this.serverURL + "/save/" + key + "?API_TOKEN=" + this.API_TOKEN);
+            HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(uri)
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .header("Content-Type", "application/json")
                 .version(HttpClient.Version.HTTP_1_1)
                 .build();
-        try {
             HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8);
             HttpClient httpClient = HttpClient.newHttpClient();
             HttpResponse<String> response = httpClient.send(httpRequest, handler);
             if (response.statusCode() != ResponseCode.OK_200.getCode()) {
                 System.out.println("Не удалось сохранить данные, ошибка :" + response.statusCode());
             }
-        } catch (IOException | InterruptedException ignored) {
+        } catch (IllegalArgumentException ex){
+            System.out.println("Неверный формат URL. Повторите попытку.");
+        } catch (IOException | InterruptedException ex) {
+            System.out.println("Ошибка соединения. Повторите попытку.");
         }
     }
 
-    public String load(String key) throws IOException, InterruptedException {
-        URI uri = URI.create(this.serverURL + "/load/" + key + "?API_TOKEN=" + this.API_TOKEN);
-        HttpRequest request = HttpRequest.newBuilder()
-                .GET()
-                .uri(uri)
-                .header("Content-Type", "application/json")
-                .version(HttpClient.Version.HTTP_1_1)
-                .build();
-        HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpResponse<String> response = httpClient.send(request, handler);
-        if (response.statusCode() != ResponseCode.OK_200.getCode()) {
-            System.out.println("Не удалось получить данные, оОшибка :" + response.statusCode());
+    public String load(String key) {
+        try {
+            URI uri = URI.create(this.serverURL + "/load/" + key + "?API_TOKEN=" + this.API_TOKEN);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .GET()
+                    .uri(uri)
+                    .header("Content-Type", "application/json")
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .build();
+            HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+            HttpClient httpClient = HttpClient.newHttpClient();
+            HttpResponse<String> response = httpClient.send(request, handler);
+            if (response.statusCode() != ResponseCode.OK_200.getCode()) {
+                System.out.println("Не удалось получить данные, ошибка :" + response.statusCode());
+            }
+            return response.body();
+        } catch (IllegalArgumentException ex){
+            System.out.println("Неверный формат URL. Повторите попытку.");
+        } catch (IOException | InterruptedException ex) {
+            System.out.println("Ошибка соединения. Повторите попытку.");
         }
-        return response.body();
+        return "";
     }
 
 }

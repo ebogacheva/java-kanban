@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 public class HttpTaskManager extends FileBackedTaskManager{
 
     private final KVTaskClient kvTaskClient;
-    private final String kvServerURL;
     private final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
@@ -27,77 +26,85 @@ public class HttpTaskManager extends FileBackedTaskManager{
             .serializeNulls()
             .create();
 
-
-    public HttpTaskManager(String kvServerURL) throws IOException, InterruptedException {
-        super(kvServerURL);
-        this.kvServerURL = kvServerURL;
-        this.kvTaskClient = new KVTaskClient(this.kvServerURL);
-        loadFromKey();
+    private enum Keys {
+        TASKS("tasks"),
+        SUBTASKS("subtasks"),
+        EPICS("epics"),
+        HISTORY("history");
+        private final String key;
+        Keys(String key) {
+            this.key = key;
+        }
+        public String getKey() {
+            return key;
+        }
     }
 
-    public void loadFromKey() throws IOException, InterruptedException {
-        JsonElement jsonTasks = new JsonParser().parse(kvTaskClient.load("tasks"));
-        if (!jsonTasks.isJsonNull()) {
-            JsonArray jsonTasksArray = jsonTasks.getAsJsonArray();
-            for (JsonElement jsonTask : jsonTasksArray) {
-                Task task = gson.fromJson(jsonTask, Task.class);
-                this.tasks.put(task.getId(), task);
-            }
-        }
-
-        JsonElement jsonEpics = new JsonParser().parse(kvTaskClient.load("epics"));
-        if (!jsonEpics.isJsonNull()) {
-            JsonArray jsonEpicsArray = jsonEpics.getAsJsonArray();
-            for (JsonElement jsonEpic : jsonEpicsArray) {
-                Epic epic = gson.fromJson(jsonEpic, Epic.class);
-                this.epics.put(epic.getId(), epic);
-            }
-        }
-
-        JsonElement jsonSubtasks = new JsonParser().parse(kvTaskClient.load("subtask"));
-        if (!jsonSubtasks.isJsonNull()) {
-            JsonArray jsonSubtasksArray = jsonSubtasks.getAsJsonArray();
-            for (JsonElement jsonSubtask : jsonSubtasksArray) {
-                Subtask subtask = gson.fromJson(jsonSubtask, Subtask.class);
-                this.subtasks.put(subtask.getId(), subtask);
-            }
-        }
-
-        JsonElement jsonSortedTasks = new JsonParser().parse(kvTaskClient.load("sortedTasks"));
-        if (!jsonSubtasks.isJsonNull()) {
-            JsonArray jsonSortedTasksArray = jsonSortedTasks.getAsJsonArray();
-            for (JsonElement jsonSortedTask : jsonSortedTasksArray) {
-                Task task = gson.fromJson(jsonSortedTask, Task.class);
-                this.sortedTasks.add(task);
-            }
-        }
-
-        JsonElement jsonHistoryList = new JsonParser().parse(kvTaskClient.load("history"));
-        if (!jsonHistoryList.isJsonNull()) {
-            JsonArray jsonHistoryArray = jsonHistoryList.getAsJsonArray();
-            for (JsonElement jsonTaskId : jsonHistoryArray) {
-                int taskId = jsonTaskId.getAsInt();
-                if (this.subtasks.containsKey(taskId)) {
-                    this.getSubtask(taskId);
-                } else if (this.epics.containsKey(taskId)) {
-                    this.getEpic(taskId);
-                } else if (this.tasks.containsKey(taskId)) {
-                    this.getTask(taskId);
-                }
-            }
-        }
+    public HttpTaskManager(String kvServerUrl) throws IOException, InterruptedException {
+        super(kvServerUrl);
+        this.kvTaskClient = new KVTaskClient(kvServerUrl);
+        loadFromKey();
     }
 
     @Override
     public void save() {
-        kvTaskClient.put("tasks", gson.toJson(this.tasks.values()));
-        kvTaskClient.put("subtask", gson.toJson(this.subtasks.values()));
-        kvTaskClient.put("epics", gson.toJson(this.epics));
-        kvTaskClient.put("sortedTasks", gson.toJson(this.sortedTasks));
-        kvTaskClient.put("history", gson.toJson(this.getHistory()
-                .stream()
-                .map(Task::getId)
-                .collect(Collectors.toList())));
+        kvTaskClient.put(Keys.TASKS.getKey(), gson.toJson(this.tasks.values()));
+        kvTaskClient.put(Keys.SUBTASKS.getKey(), gson.toJson(this.subtasks.values()));
+        kvTaskClient.put(Keys.EPICS.getKey(), gson.toJson(this.epics));
+        kvTaskClient.put(Keys.HISTORY.getKey(),
+                        gson.toJson(this.getHistory().stream()
+                        .map(Task::getId)
+                        .collect(Collectors.toList())));
+    }
+
+    public void loadFromKey() {
+        load(Keys.TASKS);
+        load(Keys.EPICS);
+        load(Keys.SUBTASKS);
+
+        String loaded = kvTaskClient.load(Keys.HISTORY.getKey());
+        JsonElement jsonLoaded = new JsonParser().parse(loaded);
+        if (jsonLoaded.isJsonNull()) {
+            return;
+        }
+        JsonArray jsonLoadedArray = jsonLoaded.getAsJsonArray();
+        for (JsonElement jsonTaskId : jsonLoadedArray) {
+            int taskId = jsonTaskId.getAsInt();
+            if (this.subtasks.containsKey(taskId)) {
+                this.getSubtask(taskId);
+            } else if (this.epics.containsKey(taskId)) {
+                this.getEpic(taskId);
+            } else if (this.tasks.containsKey(taskId)) {
+                this.getTask(taskId);
+            }
+        }
+    }
+
+    private void load(Keys key) {
+        String loaded = kvTaskClient.load(key.getKey());
+        JsonElement jsonLoaded = new JsonParser().parse(loaded);
+        if (jsonLoaded.isJsonNull()) {
+            return;
+        }
+        JsonArray jsonLoadedArray = jsonLoaded.getAsJsonArray();
+        for (JsonElement jsonTask : jsonLoadedArray) {
+            switch (key) {
+                case TASKS:
+                    Task task = gson.fromJson(jsonTask, Task.class);
+                    this.tasks.put(task.getId(), task);
+                    this.sortedTasks.add(task);
+                    break;
+                case EPICS:
+                    Epic epic = gson.fromJson(jsonTask, Epic.class);
+                    this.epics.put(epic.getId(), epic);
+                    break;
+                case SUBTASKS:
+                    Subtask subtask = gson.fromJson(jsonTask, Subtask.class);
+                    this.subtasks.put(subtask.getId(), subtask);
+                    this.sortedTasks.add(subtask);
+                    break;
+            }
+        }
     }
 
 }

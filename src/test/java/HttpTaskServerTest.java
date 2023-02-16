@@ -1,21 +1,17 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.ebogacheva.tracker.Managers;
-import ru.yandex.practicum.ebogacheva.tracker.managers.FileBackedTaskManager;
-import ru.yandex.practicum.ebogacheva.tracker.managers.TaskManager;
-import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;
 import ru.yandex.practicum.ebogacheva.tracker.model.Task;
 import ru.yandex.practicum.ebogacheva.tracker.server.HttpTaskServer;
 import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
 import ru.yandex.practicum.ebogacheva.tracker.server.KVServer;
+import ru.yandex.practicum.ebogacheva.tracker.server.ResponseCode;
 import ru.yandex.practicum.ebogacheva.tracker.server.adapters.DurationAdapter;
 import ru.yandex.practicum.ebogacheva.tracker.server.adapters.LocalDateTimeAdapter;
 
@@ -57,46 +53,129 @@ public class HttpTaskServerTest {
         httpTaskServer.stop();
     }
 
-//    @BeforeEach
-//    void resetServer() {
+    @BeforeEach
+    void resetServer() {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request;
+        try {
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create(PATH + "tasks/task/"))
+                    .DELETE()
+                    .build();
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create(PATH + "tasks/epic/"))
+                    .DELETE()
+                    .build();
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create(PATH + "tasks/subtask/"))
+                    .DELETE()
+                    .build();
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void getTasksTest() {
+        HttpClient client = HttpClient.newHttpClient();
+        Task task1 = new Task("Task 1", "Description 1", 60);
+        HttpRequest request1 = HttpRequest
+                .newBuilder()
+                .uri(URI.create(PATH + "tasks/task"))
+                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task1)))
+                .build();
+        try {
+            HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
+            Task task1Returned = gson.fromJson(response1.body(), Task.class);
+            int id = task1Returned.getId();
+            task1.setId(id);
+            assertEquals(task1, task1Returned);
+
+            HttpRequest request3 = HttpRequest.newBuilder()
+                    .uri(URI.create(PATH + "tasks/task"))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = client.send(request3, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+            JsonArray arrayTasks = new JsonParser().parse(response.body()).getAsJsonArray();
+            assertEquals(1, arrayTasks.size());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void getEpicsTest() {
+        HttpClient client = HttpClient.newHttpClient();
+        Epic epic1 = new Epic("Epic 1", "Description 1");
+        Epic epic2 = new Epic("Epic 2", "Description 2");
+        HttpRequest request1 = HttpRequest
+                .newBuilder()
+                .uri(URI.create(PATH + "tasks/epic"))
+                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic1)))
+                .build();
+        HttpRequest request2 = HttpRequest
+                .newBuilder()
+                .uri(URI.create(PATH + "tasks/epic"))
+                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic2)))
+                .build();
+        try {
+            client.send(request1, HttpResponse.BodyHandlers.ofString());
+            client.send(request2, HttpResponse.BodyHandlers.ofString());
+            HttpRequest request3 = HttpRequest.newBuilder()
+                    .uri(URI.create(PATH + "tasks/epic"))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = client.send(request3, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+            JsonArray arrayEpics = new JsonParser().parse(response.body()).getAsJsonArray();
+            assertEquals(2, arrayEpics.size());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    @Test
+//    void getSubtasksTest() {
 //        HttpClient client = HttpClient.newHttpClient();
-//        URI uri = URI.create(PATH + "tasks/task/");
+//        URI uri = URI.create(PATH + "tasks/epic/");
+//        Epic epic = new Epic("Title Epic 1", "Description Epic 1");
+//
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .uri(uri)
+//                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic)))
+//                .build();
 //        try {
-//            HttpRequest request = HttpRequest.newBuilder().uri(uri).DELETE().build();
-//            client.send(request, HttpResponse.BodyHandlers.ofString());
-//            uri = URI.create(PATH + "tasks/epic/");
-//            request = HttpRequest.newBuilder().uri(uri).DELETE().build();
-//            client.send(request, HttpResponse.BodyHandlers.ofString());
-//            uri = URI.create(PATH + "tasks/subtask/");
-//            request = HttpRequest.newBuilder().uri(uri).DELETE().build();
-//            client.send(request, HttpResponse.BodyHandlers.ofString());
+//            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//            assertEquals(ResponseCode.CREATED_201.getCode(), response.statusCode());
+//            if (response.statusCode() == ResponseCode.CREATED_201.getCode()) {
+//                int epicId = Integer.parseInt(response.body().split("=")[1]);
+//                epic.setId(epicId);
+//                SubTask subTask = new SubTask("Title SubTask 1", "Description SubTask 1",
+//                        Status.NEW, epic.getId(), Instant.now(), 4);
+//                url = URI.create(BASE_PATH + "tasks/subtask/");
+//
+//                request = HttpRequest
+//                        .newBuilder()
+//                        .uri(url)
+//                        .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(subTask)))
+//                        .build();
+//
+//                client.send(request, HttpResponse.BodyHandlers.ofString());
+//                request = HttpRequest.newBuilder().uri(url).GET().build();
+//                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//                assertEquals(StatusCode.CODE_200.getCode(), response.statusCode());
+//                JsonArray arrayTasks = parseString(response.body()).getAsJsonArray();
+//                assertEquals(1, arrayTasks.size());
+//            }
 //        } catch (IOException | InterruptedException e) {
 //            e.printStackTrace();
 //        }
 //    }
 
-    @Test
-    public void getTasksTest() {
-        HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create(PATH + "tasks/task");
-        Task task1 = new Task("Task 1",
-                "Description 1");
-        HttpRequest request = HttpRequest
-                .newBuilder()
-                .version(HttpClient.Version.HTTP_1_1)
-                .uri(uri)
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task1)))
-                .build();
-        try {
-            client.send(request, HttpResponse.BodyHandlers.ofString());
-            request = HttpRequest.newBuilder().uri(uri).GET().build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-            JsonArray arrayTasks = new JsonParser().parse(response.body()).getAsJsonArray();
-            assertEquals(1, arrayTasks.size());
-        } catch (IOException | InterruptedException e) {
-           e.printStackTrace();
-        }
-    }
 
 }

@@ -128,19 +128,25 @@ public class EpicHandler implements HttpHandler {
             code = ResponseCode.BAD_REQUEST_400.getCode();
             return new ResponseData(code, null);
         }
-        Epic epic = gson.fromJson(body, Epic.class);
+        Epic epic = null;
+        try {
+            epic = gson.fromJson(body, Epic.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (epic == null) {
             code = ResponseCode.BAD_REQUEST_400.getCode();
-        } else {
-            int id = epic.getId();
-            if (taskManager.getEpic(id) != null) {
-                taskManager.updateEpic(epic);
-            } else {
-                taskManager.createEpic(epic);
-            }
-            code = ResponseCode.CREATED_201.getCode();
+            return new ResponseData(code, null);
         }
-        return new ResponseData(code, null);
+        int id = epic.getId();
+        if (taskManager.getEpic(id) != null) {
+            taskManager.updateEpic(epic);
+        } else {
+            taskManager.createEpic(epic);
+        }
+        code = ResponseCode.CREATED_201.getCode();
+        String response = gson.toJson(epic);
+        return new ResponseData(code, response);
     }
 
     private ResponseData delete(String pathId) {
