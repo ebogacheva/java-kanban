@@ -60,11 +60,17 @@ public class HttpTaskManager extends FileBackedTaskManager{
         load(Keys.SUBTASKS);
 
         String loaded = kvTaskClient.load(Keys.HISTORY.getKey());
+        if (loaded.isEmpty()) {
+            return;
+        }
         JsonElement jsonLoaded = new JsonParser().parse(loaded);
         if (jsonLoaded.isJsonNull()) {
             return;
         }
         JsonArray jsonLoadedArray = jsonLoaded.getAsJsonArray();
+        if (!jsonLoaded.isJsonArray()) {
+            return;
+        }
         for (JsonElement jsonTaskId : jsonLoadedArray) {
             int taskId = jsonTaskId.getAsInt();
             if (this.subtasks.containsKey(taskId)) {
@@ -81,6 +87,9 @@ public class HttpTaskManager extends FileBackedTaskManager{
         String loaded = kvTaskClient.load(key.getKey());
         JsonElement jsonLoaded = new JsonParser().parse(loaded);
         if (jsonLoaded.isJsonNull()) {
+            return;
+        }
+        if (!jsonLoaded.isJsonArray()) {
             return;
         }
         JsonArray jsonLoadedArray = jsonLoaded.getAsJsonArray();
