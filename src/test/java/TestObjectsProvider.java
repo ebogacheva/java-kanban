@@ -109,8 +109,7 @@ public class TestObjectsProvider {
        return FileBackedTaskManager.loadFromFile(new File("test1.txt"));
     }
 
-    public static void createFileWithTestData() {
-
+    public static void createManagerWithTestData() {
         TaskManager taskManager = Managers.getFileBackedManager("test-httpServer.txt");
         List<Task> tasks=TestObjectsProvider.addThreeTasksToManager(taskManager);
         List<Epic> epics=TestObjectsProvider.addThreeEpicsToManager(taskManager);

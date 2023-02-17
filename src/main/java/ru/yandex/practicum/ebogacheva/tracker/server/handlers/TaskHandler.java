@@ -130,14 +130,7 @@ public class TaskHandler implements HttpHandler {
             code = ResponseCode.BAD_REQUEST_400.getCode();
             return new ResponseData(code, null);
         }
-
-        Task task = null;
-        try {
-            task = gson.fromJson(body, Task.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        Task task = gson.fromJson(body, Task.class);
         if (task == null) {
             code = ResponseCode.BAD_REQUEST_400.getCode();
             return new ResponseData(code, null);

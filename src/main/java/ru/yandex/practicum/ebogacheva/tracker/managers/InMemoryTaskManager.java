@@ -34,6 +34,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     protected int getTaskComparator(Task task1, Task task2) {
+        if (task1 == null || task2 == null) {
+            return -1;
+        }
         if (task1.getStartDateTime() != null && task2.getStartDateTime() != null) {
             return task1.getStartDateTime().compareTo(task2.getStartDateTime());
         } else if (task1.getStartDateTime() != null) {
@@ -81,6 +84,7 @@ public class InMemoryTaskManager implements TaskManager {
             this.historyManager.remove(task.getId());
         }
         this.tasks.clear();
+        this.sortedTasks.removeIf(x -> x.getClass().equals(Task.class));
     }
 
     @Override
@@ -89,9 +93,8 @@ public class InMemoryTaskManager implements TaskManager {
             this.historyManager.remove(subtask.getId());
         }
         this.subtasks.clear();
-        this.epics.forEach((key, value) -> {
-            value.clearSubTasks();
-        });
+        this.epics.forEach((key, value) -> value.clearSubTasks());
+        this.sortedTasks.removeIf(x -> x.getClass().equals(Subtask.class));
     }
 
     @Override
@@ -138,8 +141,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTaskById(int id) {
+        Task task = this.tasks.get(id);
         this.tasks.remove(id);
-        historyManager.remove(id);
+        this.historyManager.remove(id);
+        this.sortedTasks.remove(task);
     }
 
     @Override
@@ -152,8 +157,10 @@ public class InMemoryTaskManager implements TaskManager {
         epic.removeSubTask(id);
         updateEpicStatusStartDuration(epic);
 
+        Subtask subtask = subtasks.get(id);
         this.subtasks.remove(id);
         this.historyManager.remove(id);
+        this.sortedTasks.remove(subtask);
     }
 
     @Override
@@ -261,7 +268,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask subtask) {
-        // если такой задачи нету, то добавляем
+        // если такой задачи нет, то добавляем
         if (!subtasks.containsKey(subtask.getId())) {
             createSubtask(subtask);
             return;
@@ -312,7 +319,7 @@ public class InMemoryTaskManager implements TaskManager {
         for(Subtask subtask : getEpicSubtasks(epic)) {
             if (subtask.isAttachedToEpic()) {
                 int oldEpicIdOfSubTask = subtask.getEpicId();
-                // отсоединить от какого-то старого епика
+                // отсоединить от какого-то старого эпика
                 if (oldEpicIdOfSubTask != id) {
                     Epic subTaskOldEpic = epics.get(oldEpicIdOfSubTask);
                     subTaskOldEpic.removeSubTask(subtask.getId());
@@ -322,7 +329,7 @@ public class InMemoryTaskManager implements TaskManager {
             subtasks.get(subtask.getId()).setEpicId(id);
         }
 
-        // удалить все subtask которые больше не привязаны к какому либо epic
+        // удалить все subtask которые больше не привязаны к какому-либо epic
         this.subtasks.entrySet().removeIf(entry -> !entry.getValue().isAttachedToEpic());
         for (Subtask subtask : subtasks.values()) {
             if (epics.get(id).getSubIds().contains(subtask.getId())) {

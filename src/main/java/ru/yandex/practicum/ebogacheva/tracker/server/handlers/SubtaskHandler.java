@@ -162,16 +162,17 @@ public class SubtaskHandler implements HttpHandler {
         Subtask subtask = gson.fromJson(body, Subtask.class);
         if (subtask == null) {
             code = ResponseCode.BAD_REQUEST_400.getCode();
-        } else {
-            int id = subtask.getId();
-            if (taskManager.getSubtask(id) != null) {
-                taskManager.updateSubtask(subtask);
-            } else {
-                taskManager.createSubtask(subtask);
-            }
-            code = ResponseCode.CREATED_201.getCode();
+            return new ResponseData(code, null);
         }
-        return new ResponseData(code, null);
+        int id = subtask.getId();
+        if (taskManager.getSubtask(id) != null) {
+            taskManager.updateSubtask(subtask);
+        } else {
+            taskManager.createSubtask(subtask);
+        }
+        code = ResponseCode.CREATED_201.getCode();
+        String response = gson.toJson(subtask);
+        return new ResponseData(code, response);
     }
 
     private ResponseData delete(String pathId) {
