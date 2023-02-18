@@ -13,14 +13,22 @@ import static org.junit.jupiter.api.Assertions.*;
 abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
 
     TaskManagerType taskManager;
+    private static final String INVALID_EPIC_STATUS_MESSAGE = "Статус эпика некорректный.";
+    private static final String EPICS_NOT_EQUAL_MESSAGE = "Эпики не совпадают.";
+    private static final String NO_EPICS_MESSAGE = "Эпики не возвращаются.";
+    private static final String EPIC_NOT_FOUND_MESSAGE = "Эпик не найден.";
+    private static final String TASK_NOT_FOUND_MESSAGE = "Задача не найдена.";
+    private static final String TASKS_NOT_EQUAL_MESSAGE = "Задачи не совпадают.";
+    private static final String SUBTASK_NOT_FOUND_MESSAGE = "Подзадача не найдена.";
+    private static final String SUBTASKS_NOT_EQUAL_MESSAGE = "Подзадачи не совпадают.";
 
     @Test
     void createTaskRegularCase() {
         final Task task = TestObjectsProvider.addTask(1, taskManager);
         final int id = task.getId();
         final Task actualTask = taskManager.getTask(id);
-        assertNotNull(actualTask, "Задача не найдена.");
-        assertEquals(task, actualTask, "Задачи не совпадают.");
+        assertNotNull(actualTask, TASK_NOT_FOUND_MESSAGE);
+        assertEquals(task, actualTask, TASKS_NOT_EQUAL_MESSAGE);
     }
 
     @Test
@@ -51,8 +59,8 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         final Subtask subtask = TestObjectsProvider.addSubtask(1, epicId, taskManager);
         final int subId = subtask.getId();
         final Subtask actualSubtask = taskManager.getSubtask(subId);
-        assertNotNull(actualSubtask, "Подзадача не найдена.");
-        assertEquals(subtask, actualSubtask, "Подзадачи не совпадают.");
+        assertNotNull(actualSubtask, SUBTASK_NOT_FOUND_MESSAGE);
+        assertEquals(subtask, actualSubtask, SUBTASKS_NOT_EQUAL_MESSAGE);
     }
 
     @Test
@@ -92,11 +100,11 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         int id = epic.getId();
         final Epic actualEpic = taskManager.getEpic(id);
         final List<Epic> epics = taskManager.getEpics();
-        assertNotNull(actualEpic, "Эпик не найден.");
-        assertEquals(epic, actualEpic, "Эпики не совпадают.");
-        assertNotNull(epics, "Эпики не возвращаются.");
+        assertNotNull(actualEpic, EPIC_NOT_FOUND_MESSAGE);
+        assertEquals(epic, actualEpic, EPICS_NOT_EQUAL_MESSAGE);
+        assertNotNull(epics, NO_EPICS_MESSAGE);
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
-        assertEquals(epic, epics.get(0), "Эпики не совпадают.");
+        assertEquals(epic, epics.get(0), EPICS_NOT_EQUAL_MESSAGE);
     }
 
     @Test
@@ -130,8 +138,8 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         int id1 = task1.getId();
         final Task actualTask1 = taskManager.getTask(id1);
 
-        assertNotNull(actualTask1, "Задача не найдена.");
-        assertEquals(task1, actualTask1, "Задачи не совпадают.");
+        assertNotNull(actualTask1, TASK_NOT_FOUND_MESSAGE);
+        assertEquals(task1, actualTask1, TASKS_NOT_EQUAL_MESSAGE);
     }
 
     @Test
@@ -160,8 +168,8 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         int id1 = epic1.getId();
         final Epic actualEpic1 = taskManager.getEpic(id1);
 
-        assertNotNull(actualEpic1, "Эпик не найден.");
-        assertEquals(epic1, actualEpic1, "Эпики не совпадают.");
+        assertNotNull(actualEpic1, EPIC_NOT_FOUND_MESSAGE);
+        assertEquals(epic1, actualEpic1, EPICS_NOT_EQUAL_MESSAGE);
     }
 
     @Test
@@ -190,8 +198,8 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         int id1 = subtask1.getId();
         final Subtask actualSubtask1 = taskManager.getSubtask(id1);
 
-        assertNotNull(actualSubtask1, "Подзадача не найдена.");
-        assertEquals(subtask1, actualSubtask1, "Подзадачи не совпадают.");
+        assertNotNull(actualSubtask1,SUBTASK_NOT_FOUND_MESSAGE);
+        assertEquals(subtask1, actualSubtask1, SUBTASKS_NOT_EQUAL_MESSAGE);
     }
 
     @Test
@@ -219,7 +227,7 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         final Epic epic2 = TestObjectsProvider.addEpic(2, taskManager);
         final Subtask subtask1 = TestObjectsProvider.addSubtask(1, epic1.getId(), taskManager);
         final Subtask subtask2 = TestObjectsProvider.addSubtask(2, epic1.getId(), taskManager);
-        final Subtask subtask3 = TestObjectsProvider.addSubtask(3, epic2.getId(), taskManager);
+        TestObjectsProvider.addSubtask(3, epic2.getId(), taskManager);
         final List<Subtask> expected = List.of(subtask1, subtask2);
         final Epic actualEpic1 = taskManager.getEpic(epic1.getId());
         final List<Subtask> actual = taskManager.getEpicSubtasks(actualEpic1);
@@ -275,7 +283,7 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
     @Test
     void getEpics() {
         final List<Epic> expected = TestObjectsProvider.addThreeEpicsToManager(taskManager);
-        final Subtask subtask1 = TestObjectsProvider.addSubtask(1, expected.get(0).getId(), taskManager);
+        TestObjectsProvider.addSubtask(1, expected.get(0).getId(), taskManager);
         final List<Epic> actual = taskManager.getEpics();
         for (Epic epic : expected) {
             assertTrue(actual.contains(epic));
@@ -308,14 +316,10 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         assertEquals(taskManager.getEpic(epic1.getId()).getStatus(), Status.DONE);
     }
 
-    // Тут subtask1 используется:
-    // Я создаю новый эпик, создаю subtask1 в этом эпике.
-    // Потом удаляю все подзадачи у эпика и обновляю эпик в менеджере.
-    // После этого проверяю, что эпик в менеджере изменился = считаю подзадачи эпика до и после удаления всех подзадач.
     @Test
     void updateEpic() {
         final Epic epic1 = TestObjectsProvider.addEpic(1, taskManager);
-        final Subtask subtask1 = TestObjectsProvider.addSubtask(1, epic1.getId(), taskManager);
+        TestObjectsProvider.addSubtask(1, epic1.getId(), taskManager);
         final int countOfSubtasksOld = taskManager.getEpic(epic1.getId()).getSubIds().size();
         epic1.clearSubTasks();
         taskManager.updateEpic(epic1);
@@ -351,7 +355,7 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
     void deleteEpicById() {
         final List<Epic> expectedEpics = TestObjectsProvider.addThreeEpicsToManager(taskManager);
         final int deletedEpicId = expectedEpics.get(0).getId();
-        Subtask subtask1 = TestObjectsProvider.addSubtask(1, deletedEpicId, taskManager);
+        TestObjectsProvider.addSubtask(1, deletedEpicId, taskManager);
         final List<Subtask> expectedSubtasks = taskManager.getSubtasks();
         taskManager.deleteEpicById(deletedEpicId);
         final List<Epic> actualEpics = taskManager.getEpics();
@@ -384,7 +388,7 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
     @Test
     void deleteAllEpics() {
         final List<Epic> expectedEpics = TestObjectsProvider.addThreeEpicsToManager(taskManager);
-        Subtask subtask1 = TestObjectsProvider.addSubtask(1, expectedEpics.get(0).getId(), taskManager);
+        TestObjectsProvider.addSubtask(1, expectedEpics.get(0).getId(), taskManager);
         final List<Subtask> expectedSubtasks = taskManager.getSubtasks();
         taskManager.deleteAllEpics();
         final List<Epic> actualEpics = taskManager.getEpics();
@@ -397,11 +401,11 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
 
     @Test
     void getHistory() {
-        final Task task1 = TestObjectsProvider.addTask(1, taskManager);
+        TestObjectsProvider.addTask(1, taskManager);
         final Epic epic1 = TestObjectsProvider.addEpic(1, taskManager);
         final Subtask subtask1 = TestObjectsProvider.addSubtask(1, epic1.getId(), taskManager);
         final Subtask subtask2 = TestObjectsProvider.addSubtask(2, epic1.getId(), taskManager);
-        final Epic epic2 = TestObjectsProvider.addEpic(2, taskManager);
+        TestObjectsProvider.addEpic(2, taskManager);
         final Task task2 = TestObjectsProvider.addTask(2, taskManager);
         taskManager.getEpic(epic1.getId());
         taskManager.getTask(task2.getId());
@@ -432,18 +436,18 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         final Epic actualEpic = taskManager.getEpic(id);
         final List<Epic> epics = taskManager.getEpics();
 
-        assertNotNull(actualEpic, "Эпик не найден.");
-        assertEquals(epic, actualEpic, "Эпики не совпадают.");
-        assertNotNull(epics, "Эпики не возвращаются.");
+        assertNotNull(actualEpic, EPIC_NOT_FOUND_MESSAGE);
+        assertEquals(epic, actualEpic, EPICS_NOT_EQUAL_MESSAGE);
+        assertNotNull(epics, NO_EPICS_MESSAGE);
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
-        assertEquals(epic, epics.get(0), "Эпики не совпадают.");
+        assertEquals(epic, epics.get(0), EPICS_NOT_EQUAL_MESSAGE);
     }
 
     @Test
     public void getEpicStatusWithEmptySubtaskList() {
         Epic epic = TestObjectsProvider.addEpic(1, taskManager);
         int id = epic.getId();
-        Subtask subtask1 = TestObjectsProvider.addSubtask(1, id, taskManager);
+        TestObjectsProvider.addSubtask(1, id, taskManager);
         Subtask subtask2 = TestObjectsProvider.addSubtask(2, id, taskManager);
         subtask2.setStatus(Status.DONE);
         taskManager.updateSubtask(subtask2);
@@ -454,8 +458,8 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         Status actualStatus2 = taskManager.getEpic(id).getStatus();
         Status expectedStatus2 = Status.NEW;
 
-        assertEquals(expectedStatus1, actualStatus1, "Статус эпика некорректный.");
-        assertEquals(expectedStatus2, actualStatus2, "Статус эпика некорректный.");
+        assertEquals(expectedStatus1, actualStatus1, INVALID_EPIC_STATUS_MESSAGE);
+        assertEquals(expectedStatus2, actualStatus2, INVALID_EPIC_STATUS_MESSAGE);
     }
 
     @Test
@@ -464,7 +468,7 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         int id = epic.getId();
 
         Subtask subtask1 = TestObjectsProvider.addSubtask(1, id, taskManager);
-        Subtask subtask2 = TestObjectsProvider.addSubtask(2, id, taskManager);
+        TestObjectsProvider.addSubtask(2, id, taskManager);
         subtask1.setStatus(Status.IN_PROGRESS);
         taskManager.updateSubtask(subtask1);
         Status actualStatus1 = taskManager.getEpic(id).getStatus();
@@ -474,8 +478,8 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         Status actualStatus2 = taskManager.getEpic(id).getStatus();
         Status expectedStatus2 = Status.NEW;
 
-        assertEquals(expectedStatus1, actualStatus1,"Статус эпика некорректный.");
-        assertEquals(expectedStatus2, actualStatus2, "Статус эпика некорректный.");
+        assertEquals(expectedStatus1, actualStatus1,INVALID_EPIC_STATUS_MESSAGE);
+        assertEquals(expectedStatus2, actualStatus2, INVALID_EPIC_STATUS_MESSAGE);
     }
 
     @Test
@@ -495,8 +499,8 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         Status actualStatus2 = taskManager.getEpic(id).getStatus();
         Status expectedStatus2 = Status.DONE;
 
-        assertEquals(expectedStatus1, actualStatus1, "Статус эпика некорректный.");
-        assertEquals(expectedStatus2, actualStatus2, "Статус эпика некорректный.");
+        assertEquals(expectedStatus1, actualStatus1, INVALID_EPIC_STATUS_MESSAGE);
+        assertEquals(expectedStatus2, actualStatus2, INVALID_EPIC_STATUS_MESSAGE);
     }
 
     @Test
@@ -504,12 +508,12 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         Epic epic = TestObjectsProvider.addEpic(1, taskManager);
         int id = epic.getId();
         Subtask subtask1 = TestObjectsProvider.addSubtask(1, id, taskManager);
-        Subtask subtask2 = TestObjectsProvider.addSubtask(2, id, taskManager);
+        TestObjectsProvider.addSubtask(2, id, taskManager);
         subtask1.setStatus(Status.DONE);
         taskManager.updateSubtask(subtask1);
         Status actualStatus1 = taskManager.getEpic(id).getStatus();
         Status expectedStatus1 = Status.IN_PROGRESS;
-        assertEquals(expectedStatus1, actualStatus1, "Статус эпика некорректный.");
+        assertEquals(expectedStatus1, actualStatus1, INVALID_EPIC_STATUS_MESSAGE);
     }
 
     @Test
@@ -517,11 +521,11 @@ abstract class TaskManagerTest<TaskManagerType extends TaskManager> {
         Epic epic = TestObjectsProvider.addEpic(1, taskManager);
         int id = epic.getId();
         Subtask subtask1 = TestObjectsProvider.addSubtask(1, id, taskManager);
-        Subtask subtask2 = TestObjectsProvider.addSubtask(2, id, taskManager);
+        TestObjectsProvider.addSubtask(2, id, taskManager);
         subtask1.setStatus(Status.IN_PROGRESS);
         taskManager.updateSubtask(subtask1);
         Status actualStatus1 = taskManager.getEpic(id).getStatus();
         Status expectedStatus1 = Status.IN_PROGRESS;
-        assertEquals(expectedStatus1, actualStatus1, "Статус эпика некорректный.");
+        assertEquals(expectedStatus1, actualStatus1, INVALID_EPIC_STATUS_MESSAGE);
     }
 }

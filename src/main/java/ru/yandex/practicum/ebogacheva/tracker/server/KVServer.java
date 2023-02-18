@@ -13,31 +13,44 @@ import com.sun.net.httpserver.HttpServer;
  * Постман: https://www.getpostman.com/collections/a83b61d9e1c81c10575c
  */
 public class KVServer {
-    public static final int PORT = 8078;
+    public static final int DEFAULT_PORT = 8078;
+    private final String NOT_AUTHORIZED_REQUEST_MESSAGE = "Запрос не авторизован, " +
+            "нужен параметр в query API_TOKEN со значением API-ключа";
+    private final String EMPTY_KEY_MESSAGE = "Ключ key пустой. key указывается в пути: /save/{key}";
+    private final String SUCCESS_UPDATE_MESSAGE = "Значение для ключа успешно отправлено! key =";
+    private final String LOAD_PATH = "/load";
+    private final String REGISTER_PATH = "/register";
+    private final String SAVE_PATH = "/save";
+    private final int port;
     private final String apiToken;
     private final HttpServer server;
     private final Map<String, String> data = new HashMap<>();
 
     public KVServer() throws IOException {
-        apiToken = generateApiToken();
-        server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
-        server.createContext("/register", this::register);
-        server.createContext("/save", this::save);
-        server.createContext("/load", this::load);
+        this(DEFAULT_PORT);
+    }
+
+    public KVServer(int port) throws IOException {
+        this.port = port;
+        this.apiToken = generateApiToken();
+        this.server = HttpServer.create(new InetSocketAddress("localhost", port), 0);
+        this.server.createContext(REGISTER_PATH, this::register);
+        this.server.createContext(SAVE_PATH, this::save);
+        this.server.createContext(LOAD_PATH, this::load);
     }
 
     private void load(HttpExchange httpExchange) throws IOException {
         try {
-            System.out.println("\n/load");
-            if (!hasAuth(httpExchange)) {
-                System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением API-ключа");
+            System.out.println(System.lineSeparator() + LOAD_PATH);
+            if (hasNoAuth(httpExchange)) {
+                System.out.println(NOT_AUTHORIZED_REQUEST_MESSAGE);
                 httpExchange.sendResponseHeaders(ResponseCode.FORBIDDEN_403.getCode(), 0);
                 return;
             }
             if ("GET".equals(httpExchange.getRequestMethod())) {
-                String key = httpExchange.getRequestURI().getPath().substring("/load/".length());
+                String key = httpExchange.getRequestURI().getPath().substring(LOAD_PATH.length());
                 if (key.isEmpty()) {
-                    System.out.println("Ключ key пустой. Key указывается в пути: /load/{key}");
+                    System.out.println(EMPTY_KEY_MESSAGE);
                     httpExchange.sendResponseHeaders(ResponseCode.BAD_REQUEST_400.getCode(), 0);
                     return;
                 }
@@ -48,10 +61,10 @@ public class KVServer {
                 }
                 String response = data.get(key);
                 sendText(httpExchange, response);
-                System.out.println("Значение для ключа " + key + " успешно отправлено!");
+                System.out.println(SUCCESS_UPDATE_MESSAGE + key);
                 httpExchange.sendResponseHeaders(ResponseCode.OK_200.getCode(), 0);
             } else {
-                System.out.println("/load ждёт GET-запрос, а получил: " + httpExchange.getRequestMethod());
+                System.out.println(LOAD_PATH + " ждёт GET-запрос, а получил: " + httpExchange.getRequestMethod());
                 httpExchange.sendResponseHeaders(ResponseCode.NOT_ALLOWED_405.getCode(), 0);
             }
         } finally {
@@ -61,16 +74,16 @@ public class KVServer {
 
     private void save(HttpExchange httpExchange) throws IOException {
         try {
-            System.out.println("\n/save");
-            if (!hasAuth(httpExchange)) {
-                System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
+            System.out.println(System.lineSeparator() + SAVE_PATH);
+            if (hasNoAuth(httpExchange)) {
+                System.out.println(NOT_AUTHORIZED_REQUEST_MESSAGE);
                 httpExchange.sendResponseHeaders(ResponseCode.FORBIDDEN_403.getCode(), 0);
                 return;
             }
             if ("POST".equals(httpExchange.getRequestMethod())) {
-                String key = httpExchange.getRequestURI().getPath().substring("/save/".length());
+                String key = httpExchange.getRequestURI().getPath().substring(SAVE_PATH.length());
                 if (key.isEmpty()) {
-                    System.out.println("Key для сохранения пустой. key указывается в пути: /save/{key}");
+                    System.out.println(EMPTY_KEY_MESSAGE);
                     httpExchange.sendResponseHeaders(ResponseCode.BAD_REQUEST_400.getCode(), 0);
                     return;
                 }
@@ -81,10 +94,10 @@ public class KVServer {
                     return;
                 }
                 data.put(key, value);
-                System.out.println("Значение для ключа " + key + " успешно обновлено!");
+                System.out.println(SUCCESS_UPDATE_MESSAGE + key);
                 httpExchange.sendResponseHeaders(ResponseCode.OK_200.getCode(), 0);
             } else {
-                System.out.println("/save ждёт POST-запрос, а получил: " + httpExchange.getRequestMethod());
+                System.out.println(SAVE_PATH +" ждёт POST-запрос, а получил: " + httpExchange.getRequestMethod());
                 httpExchange.sendResponseHeaders(ResponseCode.NOT_ALLOWED_405.getCode(), 0);
             }
         } finally {
@@ -94,11 +107,11 @@ public class KVServer {
 
     private void register(HttpExchange httpExchange) throws IOException {
         try {
-            System.out.println("\n/register");
+            System.out.println(System.lineSeparator() + REGISTER_PATH);
             if ("GET".equals(httpExchange.getRequestMethod())) {
                 sendText(httpExchange, apiToken);
             } else {
-                System.out.println("/register ждёт GET-запрос, а получил " + httpExchange.getRequestMethod());
+                System.out.println(REGISTER_PATH +" ждёт GET-запрос, а получил " + httpExchange.getRequestMethod());
                 httpExchange.sendResponseHeaders(ResponseCode.NOT_ALLOWED_405.getCode(), 0);
             }
         } finally {
@@ -107,9 +120,9 @@ public class KVServer {
     }
 
     public void start() {
-        System.out.println("Запускаем сервер на порту " + PORT);
-        System.out.println("Открой в браузере http://localhost:" + PORT + "/");
-        System.out.println("API_TOKEN: " + apiToken);
+        System.out.println("Запускаем сервер на порту " + this.port);
+        System.out.println("Открой в браузере http://localhost:" + this.port + "/");
+        System.out.println("API_TOKEN: " + this.apiToken);
         server.start();
     }
 
@@ -121,9 +134,9 @@ public class KVServer {
         return "" + System.currentTimeMillis();
     }
 
-    protected boolean hasAuth(HttpExchange httpExchange) {
+    protected boolean hasNoAuth(HttpExchange httpExchange) {
         String rawQuery = httpExchange.getRequestURI().getRawQuery();
-        return rawQuery != null && (rawQuery.contains("API_TOKEN=" + apiToken) || rawQuery.contains("API_TOKEN=DEBUG"));
+        return rawQuery == null || (!rawQuery.contains("API_TOKEN=" + apiToken) && !rawQuery.contains("API_TOKEN=DEBUG"));
     }
 
     protected String readText(HttpExchange httpExchange) throws IOException {

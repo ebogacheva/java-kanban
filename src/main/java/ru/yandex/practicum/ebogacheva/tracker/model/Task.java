@@ -2,7 +2,6 @@ package ru.yandex.practicum.ebogacheva.tracker.model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
@@ -45,10 +44,9 @@ public class Task {
     }
 
     private LocalDateTime getStartDateTimeFormatted(String input) {
-        DateTimeFormatter formatterDateTime = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         LocalDateTime outputDateTime = null;
         try {
-            outputDateTime = LocalDateTime.parse(input, formatterDateTime);
+            outputDateTime = LocalDateTime.parse(input, TaskManagerConstants.DATE_TIME_FORMATTER);
         } catch (DateTimeParseException ignored) {
         }
         return outputDateTime;

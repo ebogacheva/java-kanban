@@ -12,19 +12,18 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
 
+    private static final String TEST_KV_SERVER_URL = "http://localhost:8079";
     private KVServer kvServer;
-    private final String KVServer_URL = "http://localhost:8078";
 
     @BeforeEach
     void initiateTaskManager() {
         try {
-            kvServer = new KVServer();
+            kvServer = new KVServer(8079);
             kvServer.start();
-            taskManager = Managers.getHttpTaskManager(KVServer_URL);
+            taskManager = Managers.getHttpTaskManager(TEST_KV_SERVER_URL);
         } catch (IOException | InterruptedException ex) {
             ex.printStackTrace();
         }

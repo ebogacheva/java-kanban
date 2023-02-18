@@ -12,16 +12,18 @@ import java.io.IOException;
 
 public class Managers {
 
-    public static TaskManager getDefault() { return new InMemoryTaskManager(); }
+    public static TaskManager getDefault() { return new HttpTaskManager("http://localhost:" + KVServer.DEFAULT_PORT); }
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
     public static TaskManager getFileBackedManager(String fileName) {
         return new FileBackedTaskManager(fileName);
     }
-
     public static HttpTaskManager getHttpTaskManager(String kvServerURL) throws IOException, InterruptedException {
         return new HttpTaskManager(kvServerURL);
+    }
+    public static TaskManager getInMemoryTaskManager() {
+        return new InMemoryTaskManager();
     }
 
 }

@@ -31,6 +31,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class HttpTaskServerTest {
+
+    private static final String HTTP_LOCALHOST_8080 = "http://localhost:8080/";
+    private static final String TEST_KV_SERVER_URL = "http://localhost:8079";
+    private static final String TASK_PATH = "tasks/task/";
+    private static final String EPIC_PATH = "tasks/epic/";
+    private static final String SUBTASK_PATH = "tasks/subtask/";
+    private static final String HISTORY_PATH = "tasks/history";
+    private static final String SUBTASKS_BY_EPIC_PATH = "tasks/subtask/epic/";
+    private static final String SORTED_TASKS_PATH = "tasks/";
+    private static final String ID_PART_PATH = "?id=";
+    private static final String INVALID_URL_MESSAGE = "Неверный формат URL.";
+    private static final String CONNECTION_ERROR_MESSAGE = "Ошибка соединения.";
+    private static final int TEST_KV_PORT = 8079;
     private static KVServer kvServer;
     private static HttpTaskServer httpTaskServer;
     private static final Gson gson = new GsonBuilder()
@@ -38,14 +51,13 @@ public class HttpTaskServerTest {
             .registerTypeAdapter(Duration.class, new DurationAdapter())
             .serializeNulls()
             .create();
-    private final String PATH = "http://localhost:8080/";
 
     @BeforeAll
     static void startServer() {
         try {
-            kvServer = new KVServer();
+            kvServer = new KVServer(TEST_KV_PORT);
             kvServer.start();
-            httpTaskServer = new HttpTaskServer();
+            httpTaskServer = new HttpTaskServer(TEST_KV_SERVER_URL);
             httpTaskServer.start();
         } catch (IOException | InterruptedException ex) {
             ex.printStackTrace();
@@ -64,18 +76,18 @@ public class HttpTaskServerTest {
         HttpRequest request;
         try {
             request = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/task/"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .DELETE()
                     .build();
             httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             request = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic/"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .DELETE()
                     .build();
             httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             request = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask/"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH))
                     .DELETE()
                     .build();
             httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -93,7 +105,7 @@ public class HttpTaskServerTest {
             task1.setStartDateTime(TestObjectsProvider.getDateTimeForTesting());
             HttpRequest request1 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task1)))
                     .build();
             HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
@@ -103,7 +115,7 @@ public class HttpTaskServerTest {
             task2.setStartDateTime(TestObjectsProvider.getDateTimeForTestingPlusMinutes(-10000));
             HttpRequest request2 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task2)))
                     .build();
             HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
@@ -112,14 +124,14 @@ public class HttpTaskServerTest {
             Task task3 = TestObjectsProvider.getTaskForTesting(3);
             HttpRequest request3 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task3)))
                     .build();
             HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
             int id3 = (gson.fromJson(response3.body(), Task.class)).getId();
 
             HttpRequest request4 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SORTED_TASKS_PATH))
                     .GET()
                     .build();
             HttpResponse<String> response4 = client.send(request4, HttpResponse.BodyHandlers.ofString());
@@ -135,9 +147,9 @@ public class HttpTaskServerTest {
             assertEquals(id1, idSorted2);
             assertEquals(id3, idSorted3);
         } catch (IllegalArgumentException ex) {
-            System.out.println("Неверный формат URL.");
+            System.out.println(INVALID_URL_MESSAGE);
         } catch (IOException | InterruptedException ex) {
-            System.out.println("Ошибка соединения.");
+            System.out.println(CONNECTION_ERROR_MESSAGE);
         }
     }
 
@@ -150,7 +162,7 @@ public class HttpTaskServerTest {
             task1.setStartDateTime(TestObjectsProvider.getDateTimeForTesting());
             HttpRequest request1 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task1)))
                     .build();
             HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
@@ -162,7 +174,7 @@ public class HttpTaskServerTest {
 
             // General: GET Task = Task getTask(int id)
             HttpRequest request2 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/task/?id=" + id))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH +ID_PART_PATH + id))
                     .GET()
                     .build();
             HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
@@ -171,7 +183,7 @@ public class HttpTaskServerTest {
 
             // General: GET Tasks = List<Task> getTasks()
             HttpRequest request3 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .GET()
                     .build();
             HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
@@ -180,7 +192,7 @@ public class HttpTaskServerTest {
 
             // General: DELETE Task = void deleteTaskById(int id)
             HttpRequest request4 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/task/?id=" + id))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH + ID_PART_PATH + id))
                     .DELETE()
                     .build();
             HttpResponse<String> response4 = client.send(request4, HttpResponse.BodyHandlers.ofString());
@@ -196,12 +208,12 @@ public class HttpTaskServerTest {
             Task task3 = TestObjectsProvider.getTaskForTesting(3);
             HttpRequest request5 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task2)))
                     .build();
             HttpRequest request6 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task3)))
                     .build();
             HttpResponse<String> response5 = client.send(request5, HttpResponse.BodyHandlers.ofString());
@@ -217,7 +229,7 @@ public class HttpTaskServerTest {
 
             HttpRequest request7 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .DELETE()
                     .build();
             HttpResponse<String> response7 = client.send(request7, HttpResponse.BodyHandlers.ofString());
@@ -225,7 +237,7 @@ public class HttpTaskServerTest {
             assertEquals(ResponseCode.OK_200.getCode(), code7);
 
             HttpRequest request8 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .GET()
                     .build();
             HttpResponse<String> response8 = client.send(request8, HttpResponse.BodyHandlers.ofString());
@@ -234,9 +246,9 @@ public class HttpTaskServerTest {
             assertEquals(ResponseCode.OK_200.getCode(), code8);
             assertEquals(0, arrayTasks8.size());
         } catch (IllegalArgumentException ex) {
-            System.out.println("Неверный формат URL.");
+            System.out.println(INVALID_URL_MESSAGE);
         } catch (IOException | InterruptedException ex) {
-            System.out.println("Ошибка соединения.");
+            System.out.println(CONNECTION_ERROR_MESSAGE);
         }
     }
 
@@ -248,7 +260,7 @@ public class HttpTaskServerTest {
             Task task1 = null;
             HttpRequest request1 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task1)))
                     .build();
             HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
@@ -257,7 +269,7 @@ public class HttpTaskServerTest {
 
             // Task doesn't exist: GET Task = Task getTask(int id)
             HttpRequest request2 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/task/?id=" + 999))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH + ID_PART_PATH + 999))
                     .GET()
                     .build();
             HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
@@ -267,7 +279,7 @@ public class HttpTaskServerTest {
             // Empty list of Tasks: GET Tasks = List<Task> getTasks()
             resetData();
             HttpRequest request3 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .GET()
                     .build();
             HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
@@ -276,9 +288,9 @@ public class HttpTaskServerTest {
             assertEquals(ResponseCode.OK_200.getCode(), code3);
             assertEquals(0, arrayTasks.size());
         } catch (IllegalArgumentException ex) {
-            System.out.println("Неверный формат URL.");
+            System.out.println(INVALID_URL_MESSAGE);
         } catch (IOException | InterruptedException ex) {
-            System.out.println("Ошибка соединения.");
+            System.out.println(CONNECTION_ERROR_MESSAGE);
         }
     }
 
@@ -290,7 +302,7 @@ public class HttpTaskServerTest {
             Epic epic1 = TestObjectsProvider.getEpicForTesting(1);
             HttpRequest request1 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic1)))
                     .build();
             HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
@@ -302,7 +314,7 @@ public class HttpTaskServerTest {
 
             // General: GET Epic = Epic getEpic(int id)
             HttpRequest request2 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic/?id=" + id))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH + ID_PART_PATH + id))
                     .GET()
                     .build();
             HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
@@ -313,7 +325,7 @@ public class HttpTaskServerTest {
 
             // General: GET Epics = List<Epic> getEpics()
             HttpRequest request3 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .GET()
                     .build();
             HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
@@ -327,7 +339,7 @@ public class HttpTaskServerTest {
 
             // General: DELETE Epic = void deleteEpicById(int id)
             HttpRequest request4 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic/?id=" + id))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH + ID_PART_PATH + id))
                     .DELETE()
                     .build();
             HttpResponse<String> response4 = client.send(request4, HttpResponse.BodyHandlers.ofString());
@@ -342,12 +354,12 @@ public class HttpTaskServerTest {
             Epic epic3 = TestObjectsProvider.getEpicForTesting(3);
             HttpRequest request5 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic2)))
                     .build();
             HttpRequest request6 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic3)))
                     .build();
             HttpResponse<String> response5 = client.send(request5, HttpResponse.BodyHandlers.ofString());
@@ -363,7 +375,7 @@ public class HttpTaskServerTest {
 
             HttpRequest request7 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .DELETE()
                     .build();
             HttpResponse<String> response7 = client.send(request7, HttpResponse.BodyHandlers.ofString());
@@ -371,7 +383,7 @@ public class HttpTaskServerTest {
             assertEquals(ResponseCode.OK_200.getCode(), code7);
 
             HttpRequest request8 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .GET()
                     .build();
             HttpResponse<String> response8 = client.send(request8, HttpResponse.BodyHandlers.ofString());
@@ -381,9 +393,9 @@ public class HttpTaskServerTest {
             assertEquals(0, arrayEpics8.size());
 
         } catch (IllegalArgumentException ex) {
-            System.out.println("Неверный формат URL.");
+            System.out.println(INVALID_URL_MESSAGE);
         } catch (IOException | InterruptedException ex) {
-            System.out.println("Ошибка соединения.");
+            System.out.println(CONNECTION_ERROR_MESSAGE);
         }
     }
 
@@ -395,7 +407,7 @@ public class HttpTaskServerTest {
             Epic epic1 = null;
             HttpRequest request1 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic1)))
                     .build();
             HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
@@ -404,7 +416,7 @@ public class HttpTaskServerTest {
 
             // Epic doesn't exist: GET Epic = Epic getEpic(int id)
             HttpRequest request2 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic/?id=" + 999))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH + ID_PART_PATH + 999))
                     .GET()
                     .build();
             HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
@@ -414,7 +426,7 @@ public class HttpTaskServerTest {
             // Empty list of Epics: GET Epics = List<Epic> getEpics()
             resetData();
             HttpRequest request3 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .GET()
                     .build();
             HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
@@ -423,9 +435,9 @@ public class HttpTaskServerTest {
             assertEquals(ResponseCode.OK_200.getCode(), code3);
             assertEquals(0, arrayEpics.size());
         } catch (IllegalArgumentException ex) {
-            System.out.println("Неверный формат URL.");
+            System.out.println(INVALID_URL_MESSAGE);
         } catch (IOException | InterruptedException ex) {
-            System.out.println("Ошибка соединения.");
+            System.out.println(CONNECTION_ERROR_MESSAGE);
         }
     }
 
@@ -437,7 +449,7 @@ public class HttpTaskServerTest {
             Epic epic1 = TestObjectsProvider.getEpicForTesting(1);
             HttpRequest requestEpic = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic1)))
                     .build();
             HttpResponse<String> responseEpic = client.send(requestEpic, HttpResponse.BodyHandlers.ofString());
@@ -448,7 +460,7 @@ public class HttpTaskServerTest {
             subtask1.setStartDateTime(TestObjectsProvider.getDateTimeForTesting());
             HttpRequest request1 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(subtask1)))
                     .build();
             HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
@@ -460,7 +472,7 @@ public class HttpTaskServerTest {
 
             // General: GET Subtask = Subtask getSubtask(int id)
             HttpRequest request2 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask/?id=" + subId))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH + ID_PART_PATH + subId))
                     .GET()
                     .build();
             HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
@@ -471,7 +483,7 @@ public class HttpTaskServerTest {
 
             // General: GET Subtasks = List<Subtask> getSubtasks()
             HttpRequest request3 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH))
                     .GET()
                     .build();
             HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
@@ -482,10 +494,10 @@ public class HttpTaskServerTest {
 
             // General: GET Subtasks by Epic = List<Subtask> getEpicSubtasks(Epic epic)
             HttpRequest request4 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask/epic/?id=" + epicId))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASKS_BY_EPIC_PATH + ID_PART_PATH + epicId))
                     .GET()
                     .build();
-            HttpResponse<String> response4 = client.send(request3, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response4 = client.send(request4, HttpResponse.BodyHandlers.ofString());
             JsonArray arraySubtasks2 = new JsonParser().parse(response4.body()).getAsJsonArray();
             JsonElement jsonElement = arraySubtasks2.get(0);
             Subtask subtaskFromServer2 = gson.fromJson(jsonElement, Subtask.class);
@@ -496,7 +508,7 @@ public class HttpTaskServerTest {
 
             // General: DELETE Subtask = void deleteSubtaskById(int id)
             HttpRequest request5 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask/?id=" + subId))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH + ID_PART_PATH + subId))
                     .DELETE()
                     .build();
             HttpResponse<String> response5 = client.send(request5, HttpResponse.BodyHandlers.ofString());
@@ -510,7 +522,7 @@ public class HttpTaskServerTest {
             Epic epic2 = TestObjectsProvider.getEpicForTesting(2);
             HttpRequest requestEpic2 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic2)))
                     .build();
             HttpResponse<String> responseEpic2 = client.send(requestEpic2, HttpResponse.BodyHandlers.ofString());
@@ -521,15 +533,15 @@ public class HttpTaskServerTest {
             subtask21.setStartDateTime(TestObjectsProvider.getDateTimeForTesting());
             HttpRequest request6 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(subtask21)))
                     .build();
-            HttpResponse<String> response6 = client.send(request6, HttpResponse.BodyHandlers.ofString());
-            Subtask subtask21Returned = gson.fromJson(response6.body(), Subtask.class);
+            client.send(request6, HttpResponse.BodyHandlers.ofString());
+            //Subtask subtask21Returned = gson.fromJson(response6.body(), Subtask.class);
 
             HttpRequest request7 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask/"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH))
                     .DELETE()
                     .build();
             HttpResponse<String> response7 = client.send(request7, HttpResponse.BodyHandlers.ofString());
@@ -537,7 +549,7 @@ public class HttpTaskServerTest {
             assertEquals(ResponseCode.OK_200.getCode(), code7);
 
             HttpRequest request8 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH))
                     .GET()
                     .build();
             HttpResponse<String> response8 = client.send(request8, HttpResponse.BodyHandlers.ofString());
@@ -547,9 +559,9 @@ public class HttpTaskServerTest {
             assertEquals(0, arrayTasks8.size());
 
         } catch (IllegalArgumentException ex) {
-            System.out.println("Неверный формат URL.");
+            System.out.println(INVALID_URL_MESSAGE);
         } catch (IOException | InterruptedException ex) {
-            System.out.println("Ошибка соединения.");
+            System.out.println(CONNECTION_ERROR_MESSAGE);
         }
     }
 
@@ -558,20 +570,10 @@ public class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
         try {
             // Null: POST new Subtask = void createSubtask(Subtask subtask)
-            Epic epic1 = TestObjectsProvider.getEpicForTesting(1);
-            HttpRequest requestEpic = HttpRequest
-                    .newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
-                    .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic1)))
-                    .build();
-            HttpResponse<String> responseEpic = client.send(requestEpic, HttpResponse.BodyHandlers.ofString());
-            Epic epic1Returned = gson.fromJson(responseEpic.body(), Epic.class);
-            int epicId = epic1Returned.getId();
-
             Subtask subtask1 = null;
             HttpRequest request1 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(subtask1)))
                     .build();
             HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
@@ -580,7 +582,7 @@ public class HttpTaskServerTest {
 
             // Subtask doesn't exist: GET Subtask = Subtask getSubtask(int id)
             HttpRequest request2 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask/?id=" + 999))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH + ID_PART_PATH + 999))
                     .GET()
                     .build();
             HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
@@ -590,7 +592,7 @@ public class HttpTaskServerTest {
             // Empty list of Subtask: GET Subtask = List<Subtask> getSubtasks()
             resetData();
             HttpRequest request3 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH))
                     .GET()
                     .build();
             HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
@@ -599,9 +601,9 @@ public class HttpTaskServerTest {
             assertEquals(ResponseCode.OK_200.getCode(), code3);
             assertEquals(0, arraySubtasks.size());
         } catch (IllegalArgumentException ex) {
-            System.out.println("Неверный формат URL.");
+            System.out.println(INVALID_URL_MESSAGE);
         } catch (IOException | InterruptedException ex) {
-            System.out.println("Ошибка соединения.");
+            System.out.println(CONNECTION_ERROR_MESSAGE);
         }
     }
 
@@ -613,7 +615,7 @@ public class HttpTaskServerTest {
             task1.setStartDateTime(TestObjectsProvider.getDateTimeForTesting());
             HttpRequest request1 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task1)))
                     .build();
             HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
@@ -622,7 +624,7 @@ public class HttpTaskServerTest {
             Epic epic1 = TestObjectsProvider.getEpicForTesting(1);
             HttpRequest request2 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic1)))
                     .build();
             HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
@@ -632,7 +634,7 @@ public class HttpTaskServerTest {
             Subtask subtask1 = TestObjectsProvider.getSubtaskForTesting(1, id2);
             HttpRequest request3 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(subtask1)))
                     .build();
             HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
@@ -643,35 +645,35 @@ public class HttpTaskServerTest {
             task2.setStartDateTime(TestObjectsProvider.getDateTimeForTesting());
             HttpRequest request4 = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/task"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH))
                     .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task2)))
                     .build();
             HttpResponse<String> response4 = client.send(request4, HttpResponse.BodyHandlers.ofString());
             int id4 = (gson.fromJson(response4.body(), Task.class)).getId();
 
             HttpRequest request5 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/task/?id=" + id4))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH + ID_PART_PATH + id4))
                     .GET()
                     .build();
             HttpResponse<String> response5 = client.send(request5, HttpResponse.BodyHandlers.ofString());
             Task task2FromServer = gson.fromJson(response5.body(), Task.class);
 
             HttpRequest request6 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/subtask/?id=" + id3))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + SUBTASK_PATH + ID_PART_PATH + id3))
                     .GET()
                     .build();
             HttpResponse<String> response6 = client.send(request6, HttpResponse.BodyHandlers.ofString());
             Subtask subtask1FromServer = gson.fromJson(response6.body(), Subtask.class);
 
             HttpRequest request7 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/task/?id=" + id1))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + TASK_PATH + ID_PART_PATH + id1))
                     .GET()
                     .build();
             HttpResponse<String> response7 = client.send(request7, HttpResponse.BodyHandlers.ofString());
             Task task1FromServer = gson.fromJson(response7.body(), Task.class);
 
             HttpRequest request8 = HttpRequest.newBuilder()
-                    .uri(URI.create(PATH + "tasks/epic/?id=" + id2))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + EPIC_PATH + ID_PART_PATH + id2))
                     .GET()
                     .build();
             HttpResponse<String> response8 = client.send(request8, HttpResponse.BodyHandlers.ofString());
@@ -679,7 +681,7 @@ public class HttpTaskServerTest {
 
             HttpRequest request = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(PATH + "tasks/history"))
+                    .uri(URI.create(HTTP_LOCALHOST_8080 + HISTORY_PATH))
                     .GET()
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -689,10 +691,9 @@ public class HttpTaskServerTest {
             jsonArray.forEach(element -> actual.add(gson.fromJson(element, Task.class)));
             assertEquals(expected, actual);
         } catch (IllegalArgumentException ex) {
-            System.out.println("Неверный формат URL.");
+            System.out.println(INVALID_URL_MESSAGE);
         } catch (IOException | InterruptedException ex) {
-            System.out.println("Ошибка соединения.");
+            System.out.println(CONNECTION_ERROR_MESSAGE);
         }
     }
-
 }

@@ -7,13 +7,14 @@ import ru.yandex.practicum.ebogacheva.tracker.managers.TaskManager;
 import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
 import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;
 import ru.yandex.practicum.ebogacheva.tracker.model.Task;
+import ru.yandex.practicum.ebogacheva.tracker.model.TaskManagerConstants;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,7 +35,7 @@ public class TestObjectsProvider {
     }
 
     public static LocalDateTime getDateTimeForTesting() {
-        return LocalDateTime.parse("13.01.2023 12:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
+        return LocalDateTime.parse("13.01.2023 12:00", TaskManagerConstants.DATE_TIME_FORMATTER);
     }
 
     public static LocalDateTime getDateTimeForTestingPlusMinutes(long minutes) {
@@ -106,7 +107,7 @@ public class TestObjectsProvider {
     }
 
     public static FileBackedTaskManager getFileBackedManager() {
-       return FileBackedTaskManager.loadFromFile(new File("test1.txt"));
+        return FileBackedTaskManager.loadFromFile(new File("test1.txt"));
     }
 
     public static void createManagerWithTestData() {
@@ -118,25 +119,25 @@ public class TestObjectsProvider {
         Subtask subtask3=TestObjectsProvider.addSubtask(3, epics.get(2).getId(), taskManager);
         Subtask subtask4=TestObjectsProvider.addSubtask(4, epics.get(2).getId(), taskManager);
         Task task1=tasks.get(0);
-        task1.setStartDateTime(LocalDateTime.parse("01.01.2023 12:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        task1.setStartDateTime(LocalDateTime.parse("01.01.2023 12:00", TaskManagerConstants.DATE_TIME_FORMATTER));
         task1.setDuration(Duration.ofMinutes(145));
         taskManager.updateTask(task1);
         Task task2=tasks.get(1);
-        task2.setStartDateTime(LocalDateTime.parse("01.03.2022 12:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        task2.setStartDateTime(LocalDateTime.parse("01.03.2022 12:00", TaskManagerConstants.DATE_TIME_FORMATTER));
         task2.setDuration(Duration.ofMinutes(77));
         taskManager.updateTask(task2);
         Task task3=tasks.get(2);
-        task3.setStartDateTime(LocalDateTime.parse("05.12.2021 12:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        task3.setStartDateTime(LocalDateTime.parse("05.12.2021 12:00", TaskManagerConstants.DATE_TIME_FORMATTER));
         task3.setDuration(Duration.ofMinutes(1000));
         taskManager.updateTask(task3);
         subtask1.setDuration(Duration.ofMinutes(777));
-        subtask1.setStartDateTime(LocalDateTime.parse("01.01.2004 12:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        subtask1.setStartDateTime(LocalDateTime.parse("01.01.2004 12:00", TaskManagerConstants.DATE_TIME_FORMATTER));
         subtask2.setDuration(Duration.ofMinutes(7));
-        subtask2.setStartDateTime(LocalDateTime.parse("02.01.2005 12:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        subtask2.setStartDateTime(LocalDateTime.parse("02.01.2005 12:00", TaskManagerConstants.DATE_TIME_FORMATTER));
         subtask3.setDuration(Duration.ofMinutes(333));
-        subtask3.setStartDateTime(LocalDateTime.parse("02.01.2010 12:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        subtask3.setStartDateTime(LocalDateTime.parse("02.01.2010 12:00", TaskManagerConstants.DATE_TIME_FORMATTER));
         subtask4.setDuration(Duration.ofMinutes(10000));
-        subtask4.setStartDateTime(LocalDateTime.parse("02.01.2030 12:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        subtask4.setStartDateTime(LocalDateTime.parse("02.01.2030 12:00", TaskManagerConstants.DATE_TIME_FORMATTER));
         taskManager.updateSubtask(subtask1);
         taskManager.updateSubtask(subtask2);
         taskManager.updateSubtask(subtask3);

@@ -71,7 +71,7 @@ class EpicTest {
     @Test
     void clearSubTasks() {
         Epic epic = TestObjectsProvider.addEpic(1, taskManager);
-        Subtask subtask1 = TestObjectsProvider.getSubtaskForTesting(1, epic.getId());
+        TestObjectsProvider.getSubtaskForTesting(1, epic.getId());
         epic.clearSubTasks();
         assertTrue(epic.getSubIds().isEmpty());
     }

@@ -5,6 +5,7 @@ import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
 import ru.yandex.practicum.ebogacheva.tracker.model.Status;
 import ru.yandex.practicum.ebogacheva.tracker.model.Subtask;
 import ru.yandex.practicum.ebogacheva.tracker.model.Task;
+import ru.yandex.practicum.ebogacheva.tracker.model.TaskManagerConstants;
 import ru.yandex.practicum.ebogacheva.tracker.model.TaskType;
 
 import java.io.File;
@@ -15,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -46,7 +46,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
             for (Task task : saveToFile) {
                 fileWriter.write(task.toFileString() + "\n");
             }
-            fileWriter.write("\n");
+            fileWriter.write(System.lineSeparator());
             fileWriter.write(historyToString(this.historyManager.getHistory()));
         } catch (IOException e) {
             throw new ManagerSaveException();
@@ -125,7 +125,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
         return history;
     }
 
-   private static Task fromString(String value) {
+    private static Task fromString(String value) {
         String[] taskInString = value.split(",");
         if (taskInString.length < 7) {
             return null;
@@ -162,7 +162,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
     public static LocalDateTime getTaskDateTimeFromString(String input) {
         LocalDateTime outputDateTime = null;
         try {
-            outputDateTime = LocalDateTime.parse(input, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
+            outputDateTime = LocalDateTime.parse(input, TaskManagerConstants.DATE_TIME_FORMATTER);
         } catch (DateTimeParseException ignored) {
         }
         return outputDateTime;

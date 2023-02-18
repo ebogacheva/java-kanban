@@ -1,9 +1,7 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import ru.yandex.practicum.ebogacheva.tracker.Managers;
-import ru.yandex.practicum.ebogacheva.tracker.exceptions.ManagerSaveException;
 import ru.yandex.practicum.ebogacheva.tracker.managers.FileBackedTaskManager;
 import ru.yandex.practicum.ebogacheva.tracker.managers.TaskManager;
 import ru.yandex.practicum.ebogacheva.tracker.model.Epic;
@@ -65,7 +63,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<TaskManager> {
         assertEquals(historyExpected1, historyActual1);
 
         List<Integer> historyExpected2 = List.of();
-        String historyInString2 = "\n";
+        String historyInString2 = System.lineSeparator();
         List<Integer> historyActual2 = FileBackedTaskManager.historyFromString(historyInString2);
         assertEquals(historyExpected2, historyActual2);
     }
@@ -110,7 +108,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<TaskManager> {
                 .stream()
                 .sorted(Comparator.comparingInt(Task::getId))
                 .collect(Collectors.toList());
-        assertEquals(expected, historyFromManager);
+        assertEquals(expected, historyFromFile);
     }
 
     @Test
@@ -198,7 +196,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<TaskManager> {
     @Test
     void deleteAllEpicsBackedInFile() {
         List<Subtask> expected = TestObjectsProvider.addThreeSubtasksToManager(taskManager);
-        Subtask subtask = taskManager.getSubtask(expected.get(0).getId());
+        taskManager.getSubtask(expected.get(0).getId());
         taskManager.deleteAllEpics();
         FileBackedTaskManager taskManagerNEW = TestObjectsProvider.getFileBackedManager();
         List<Task> historyFromFile = taskManagerNEW.getHistory();
@@ -276,7 +274,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<TaskManager> {
 
     @Test
     void deleteEpicByIdBackedInFile() {
-        List<Subtask> subtasks = TestObjectsProvider.addThreeSubtasksToManager(taskManager);
+         TestObjectsProvider.addThreeSubtasksToManager(taskManager);
         List<Epic> epics = taskManager.getEpics();
         Epic epicToDelete = epics.get(0);
         List<Integer> subtasksToDelete = epicToDelete.getSubIds();
@@ -321,7 +319,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<TaskManager> {
 
     @Test
     void getEpicSubtasksBackedInFile() {
-        List<Subtask> subtasks = TestObjectsProvider.addThreeSubtasksToManager(taskManager);
+        TestObjectsProvider.addThreeSubtasksToManager(taskManager);
         Epic epic = taskManager.getEpics().get(0);
         int size = epic.getSubIds().size();
         FileBackedTaskManager taskManagerNEW = TestObjectsProvider.getFileBackedManager();
@@ -393,5 +391,4 @@ class FileBackedTaskManagerTest extends TaskManagerTest<TaskManager> {
         List<Task> history2 = taskManagerNEW2.getHistory();
         assertTrue(history2.isEmpty());
     }
-
 }

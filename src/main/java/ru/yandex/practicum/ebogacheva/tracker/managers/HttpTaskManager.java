@@ -8,7 +8,6 @@ import ru.yandex.practicum.ebogacheva.tracker.server.KVTaskClient;
 import ru.yandex.practicum.ebogacheva.tracker.server.adapters.DurationAdapter;
 import ru.yandex.practicum.ebogacheva.tracker.server.adapters.LocalDateTimeAdapter;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -37,7 +36,7 @@ public class HttpTaskManager extends FileBackedTaskManager{
         }
     }
 
-    public HttpTaskManager(String kvServerUrl) throws IOException, InterruptedException {
+    public HttpTaskManager(String kvServerUrl) {
         super(kvServerUrl);
         this.kvTaskClient = new KVTaskClient(kvServerUrl);
         loadFromKey();

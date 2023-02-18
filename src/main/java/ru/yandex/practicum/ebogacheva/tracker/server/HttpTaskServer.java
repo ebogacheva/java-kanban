@@ -15,13 +15,17 @@ import java.net.InetSocketAddress;
 public class HttpTaskServer {
 
     private static final int PORT = 8080;
-    private final String KVServer_URL = "http://localhost:8078";
+    private final static String DEFAULT_KV_SERVER_URL = "http://localhost:8078";
     private final HttpServer httpServer;
 
     public HttpTaskServer() throws IOException, InterruptedException {
+        this(DEFAULT_KV_SERVER_URL);
+    }
+
+    public HttpTaskServer(String url) throws IOException, InterruptedException {
         this.httpServer = HttpServer.create();
         this.httpServer.bind(new InetSocketAddress(PORT), 0);
-        TaskManager taskManager = Managers.getHttpTaskManager(KVServer_URL);
+        TaskManager taskManager = Managers.getHttpTaskManager(url);
         httpServer.createContext("/tasks", new PrioritizedTasksHandler(taskManager));
         httpServer.createContext("/tasks/history", new HistoryHandler(taskManager));
         httpServer.createContext("/tasks/task", new TaskHandler(taskManager));
