@@ -226,7 +226,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
         Subtask subtask = super.getSubtask(id);
         save();
         return subtask;
-
     }
 
     @Override

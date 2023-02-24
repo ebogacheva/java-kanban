@@ -242,13 +242,14 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Subtask> getEpicSubtasks(Epic epic) {
         List<Subtask> epicSubs = new ArrayList<>();
         for (Integer id : epic.getSubIds()) {
-            Subtask subtaskInside = subtasks.get(id);
-            if (subtaskInside == null) {
+            List<Subtask> subtaskInsideList = subtasks.values().stream()
+                    .filter(sub -> sub.getId() == id)
+                    .collect(Collectors.toList());
+            if (subtaskInsideList.isEmpty() || subtaskInsideList.get(0) == null) {
                 continue;
             }
-            Subtask subtaskOutput = new Subtask(subtaskInside);
+            Subtask subtaskOutput = new Subtask(subtaskInsideList.get(0));
             epicSubs.add(subtaskOutput);
-            historyManager.add(subtaskInside);
         }
         return epicSubs;
     }
@@ -292,6 +293,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.addSubTask(subtask.getId());
         }
         updateEpicStatusStartDuration(epic);
+        epics.put(epic.getId(), epic);
 
     }
 

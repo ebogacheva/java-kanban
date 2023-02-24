@@ -379,6 +379,21 @@ class FileBackedTaskManagerTest extends TaskManagerTest<TaskManager> {
     }
 
     @Test
+    void updateEpicDurationBackedInFile() {
+        Epic epic1 = TestObjectsProvider.addEpic(1, taskManager);
+        Subtask subtask1 = TestObjectsProvider.addSubtask(1, epic1.getId(), taskManager);
+        Subtask subtask2 = TestObjectsProvider.addSubtask(2, epic1.getId(), taskManager);
+        subtask1.setDuration(Duration.ofMinutes(50));
+        subtask2.setDuration(Duration.ofMinutes(14));
+        taskManager.updateSubtask(subtask1);
+        taskManager.updateSubtask(subtask2);
+        Epic epicWithDuration = taskManager.getEpic(epic1.getId());
+        epicWithDuration.setDuration(Duration.ofMinutes(1000));
+        taskManager.updateEpic(epicWithDuration);
+        assertEquals(Duration.ofMinutes(64), taskManager.getEpic(epic1.getId()).getDuration());
+    }
+
+    @Test
     void getHistoryBackedInFile() {
         List<Task> tasks = TestObjectsProvider.addThreeTasksToManager(taskManager);
         int id = tasks.get(0).getId();
